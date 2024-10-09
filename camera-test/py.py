@@ -6,7 +6,7 @@ if not cap.isOpened():
     print("Cannot open camera")
     exit()
 
-rmsp_link = "rtsp://localhost:1935"
+rmsp_link = "rtmp://localhost:1935/live/test"
 
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
