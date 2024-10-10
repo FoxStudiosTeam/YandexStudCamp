@@ -1,10 +1,9 @@
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
 """
 @version: python3.7
 @Author  : xiaor
@@ -28,63 +27,63 @@ class Infrared(object):
 
 	def trackline(self):
 		"""
-		红外巡线
+		Инфракрасное следование по линии
 		"""
 		cfg.LEFT_SPEED = 30
 		cfg.RIGHT_SPEED = 30
 		# print('ir_trackline run...')
-		# 两边都没有检测到黑线
-		if (gpio.digital_read(gpio.IR_L) == 0) and (gpio.digital_read(gpio.IR_R) == 0):  # 黑线为高，地面为低
+		# Оба датчика не обнаружили черную линию
+		if gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 0:  # Черная линия высокая, поверхность низкая
 			go.forward()
-		# 右边红外传感器检测到黑线
-		elif (gpio.digital_read(gpio.IR_L) == 0) and (gpio.digital_read(gpio.IR_R) == 1):
+		# Правый инфракрасный датчик обнаружил черную линию
+		elif gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 1:
 			go.right()
-		# 左边传感器检测到黑线
-		elif (gpio.digital_read(gpio.IR_L) == 1) and (gpio.digital_read(gpio.IR_R) == 0):
+		# Левый инфракрасный датчик обнаружил черную линию
+		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 0:
 			go.left()
-		# 两边同时检测到黑线
-		elif (gpio.digital_read(gpio.IR_L) == 1) and (gpio.digital_read(gpio.IR_R) == 1):
+		# Оба инфракрасных датчика одновременно обнаруживают черную линию
+		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 1:
 			go.stop()
 
 	def iravoid(self):
 		"""
-		红外避障
+		Инфракрасное предотвращение столкновений
 		"""
-		if gpio.digital_read(gpio.IR_M) == 0:		# 如果中间传感器校测到物体
+		if gpio.digital_read(gpio.IR_M) == 0:  # Если средний датчик обнаружил объект
 			go.stop()
-		# print("红外避障")
+		# print("Инфракрасное предотвращение столкновений")
 
 	def irfollow(self):
 		"""
-		红外跟随
+		Инфракрасное следование
 		"""
 		cfg.LEFT_SPEED = 30
 		cfg.RIGHT_SPEED = 30
-		if  (gpio.digital_read(gpio.IRF_L) == 0 and gpio.digital_read(gpio.IRF_R) == 0 and gpio.digital_read(gpio.IR_M) == 1):
-			go.stop()				# 停止：左右检测到障碍物或全都检测不到障碍物
+		if gpio.digital_read(gpio.IRF_L) == 0 and gpio.digital_read(gpio.IRF_R) == 0 and gpio.digital_read(gpio.IR_M) == 1:
+			go.stop()  # Остановка: слева и справа обнаружены препятствия или вообще ничего не обнаружено
 		else:
 			if gpio.digital_read(gpio.IRF_L) == 1 and gpio.digital_read(gpio.IRF_R) == 0:
 				cfg.LEFT_SPEED = 50
 				cfg.RIGHT_SPEED = 50
-				go.right()			# 左边传感器未检测到障碍物+右边传感器检测到障碍物
+				go.right()  # Левая сторона датчика не обнаружила препятствие + правая сторона обнаружила препятствие
 			elif gpio.digital_read(gpio.IRF_L) == 0 and gpio.digital_read(gpio.IRF_R) == 1:
 				cfg.LEFT_SPEED = 50
 				cfg.RIGHT_SPEED = 50
-				go.left()			# 左边传感器检测到障碍物+右边传感器未检测到障碍物
-			elif (gpio.digital_read(gpio.IRF_L) == 1 and gpio.digital_read(gpio.IRF_R) == 1) or (gpio.digital_read(gpio.IRF_L) == 1 and gpio.digital_read(gpio.IRF_R) == 1):
+				go.left()  # Левая сторона обнаружила препятствие + правая сторона не обнаружила препятствие
+			elif gpio.digital_read(gpio.IRF_L) == 1 and gpio.digital_read(gpio.IRF_R) == 1 or gpio.digital_read(gpio.IRF_L) == 1 and gpio.digital_read(gpio.IRF_R) == 1:
 				cfg.LEFT_SPEED = 50
 				cfg.RIGHT_SPEED = 50
-				go.forward()		# 前进：只有中间传感器检测到障碍物
+				go.forward()  # Двигаться вперед: только центральный датчик обнаружил препятствие
 
 	def avoiddrop(self):
 		"""
-		红外防跌落
+		Инфракрасное предотвращение падения
 		"""
 		cfg.LEFT_SPEED = 25
 		cfg.RIGHT_SPEED = 25
-		if (gpio.digital_read(gpio.IR_L) == 0) and (gpio.digital_read(gpio.IR_R) == 0):  # 俩个红外传感器都探测到地面的时候
-			cfg.AVOIDDROP_CHANGER = 1		# 标志位置1，串口解析中方向判断此标志
+		if gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 0:  # Когда оба инфракрасных датчика обнаруживают поверхность земли
+			cfg.AVOIDDROP_CHANGER = 1  # Установить флаг равным 1, который будет проанализирован в последовательном порту для определения направления
 		else:
-			if cfg.AVOIDDROP_CHANGER == 1: 	# 只有当上一次得到状态是正常状态时才会运行停止，避免重复执行停止无法再进行遥控
+			if cfg.AVOIDDROP_CHANGER == 1:  # Только когда предыдущее состояние было нормальным, выполняется остановка, чтобы избежать повторного выполнения остановки без возможности дальнейшего дистанционного управления
 				go.stop()
 				cfg.AVOIDDROP_CHANGER = 0
