@@ -208,14 +208,14 @@ def status():
 			try:
 				oled.disp_cruising_mode()  # отображение режима OLED
 			except:
-				print('ошибка инициализации OLED')
+				print('failed to initialized OLED')
 
 	loops = cfg.LOOPS  # Использование промежуточной переменной для увеличения значения
-	loops += 1
+	loops = loops + 1
 	cfg.LOOPS = loops  # Установка значения обратно
 
 	loops = cfg.PS2_LOOPS  # Использование промежуточной переменной для увеличения значения
-	loops += 1
+	loops = loops + 1
 	cfg.PS2_LOOPS = loops  # Установка значения обратно
 
 	Timer(0.01, status).start()  # Каждый вход требует повторного запуска таймера
