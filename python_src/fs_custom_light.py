@@ -10,7 +10,7 @@ class CustomLight(Car_light):
 
     def set_led(self, num, color):
         group = 2  # Color car, not raspberry
-        sendbuf = [0xff, group, num, COLOR.get(color), 0xff]
+        sendbuf = [0xff, group, num, COLOR[color], 0xff]
         i2c.writedata(i2c.mcu_address, sendbuf)
         time.sleep(0.005)
 
