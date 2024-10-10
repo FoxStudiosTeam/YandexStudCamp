@@ -21,7 +21,7 @@ import threading
 from threading import Timer
 from subprocess import call
 from xr_car_light import Car_light
-car_light = Car_light()
+#car_light = Car_light()
 import xr_config as cfg
 from xr_motor import RobotDirection
 go = RobotDirection()
@@ -115,10 +115,10 @@ def cruising_mode():
 		if cfg.VOICE_MOD == cfg.VOICE_MOD_SET['normal']:
 			time.sleep(0.001)
 		elif cfg.VOICE_MOD == cfg.VOICE_MOD_SET['openlight']:  # Включить свет
-			car_light.open_light()
+			#car_light.open_light()
 			cfg.VOICE_MOD = cfg.VOICE_MOD_SET['normal']
 		elif cfg.VOICE_MOD == cfg.VOICE_MOD_SET['closelight']:  # Выключить свет
-			car_light.close_light()
+			#car_light.close_light()
 			cfg.VOICE_MOD = cfg.VOICE_MOD_SET['normal']
 		elif cfg.VOICE_MOD == cfg.VOICE_MOD_SET['forward']:  # Двигаться вперед
 			go.forward()
@@ -186,22 +186,22 @@ def status():
 		if cfg.LOOPS > 30:  # Обновление функции происходит каждые 0.1 секунды, здесь это равно проверке направления машины через каждые 0.3 секунды и включению соответствующих сигнальных огней в зависимости от направления движения
 			if cfg.LIGHT_STATUS == cfg.TURN_FORWARD:
 				cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS  # Перед входом в управление направлением, присваиваем текущее состояние статусу последнего состояния
-				car_light.forward_turn_light()
+				#car_light.forward_turn_light()
 			elif cfg.LIGHT_STATUS == cfg.TURN_BACK:
 				cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS
-				car_light.back_turn_light()
+				#car_light.back_turn_light()
 			elif cfg.LIGHT_STATUS == cfg.TURN_LEFT:
 				cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS
-				car_light.left_turn_light()
+				#car_light.left_turn_light()
 			elif cfg.LIGHT_STATUS == cfg.TURN_RIGHT:
 				cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS
-				car_light.right_turn_light()
-			elif cfg.LIGHT_STATUS == cfg.STOP and cfg.LIGHT_LAST_STATUS != cfg.LIGHT_STATUS:  # Зажигание лампы STOP выполняется только один раз при длительной остановке
-				cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS
-				if cfg.LIGHT_OPEN_STATUS == 1:
-					car_light.open_light()
-				else:
-					car_light.close_light()
+				#car_light.right_turn_light()
+			# elif cfg.LIGHT_STATUS == cfg.STOP and cfg.LIGHT_LAST_STATUS != cfg.LIGHT_STATUS:  # Зажигание лампы STOP выполняется только один раз при длительной остановке
+			# 	cfg.LIGHT_LAST_STATUS = cfg.LIGHT_STATUS
+			# 	if cfg.LIGHT_OPEN_STATUS == 1:
+			# 		#car_light.open_light()
+			# 	else:
+			# 		#car_light.close_light()
 		if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
 			cfg.LOOPS = 0  # Очистка LOOPS
 			power.show_vol()  # Показание индикатора заряда батареи
@@ -240,7 +240,7 @@ if __name__ == '__main__':
 		oled.disp_default()  # Отображаем начальную информацию на OLED
 	except:
 		print('Не удалось инициализировать OLED.')
-car_light.init_led()  # Инициализируем светодиоды автомобиля
+#car_light.init_led()  # Инициализируем светодиоды автомобиля
 
 fs_custom_light = CustomLight()
 time.sleep(0.1)
