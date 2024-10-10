@@ -242,7 +242,7 @@ if __name__ == '__main__':
 		print('Не удалось инициализировать OLED.')
 car_light.init_led()  # Инициализируем светодиоды автомобиля
 
-fs_custom_light = CustomLight(car_light)
+fs_custom_light = CustomLight()
 time.sleep(0.1)
 
 
