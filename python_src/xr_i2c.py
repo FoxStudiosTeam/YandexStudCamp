@@ -26,7 +26,7 @@ import smbus
 # address = 0x18
 
 
-class I2c:
+class I2c(object):
     def __init__(self):
         self.mcu_address = 0x18
         self.ps2_address = 0x19
