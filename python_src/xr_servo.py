@@ -1,20 +1,19 @@
 # coding:utf-8
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
-"""
-@version: python3.7
-@Author  : xiaor
-@Explain :控制舵机
-@contact :
-@Time    :2020/05/09
-@File    :XiaoR_servo.py
-@Software: PyCharm
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
+
+# @version: python3.7
+# @Author  : xiaor
+# @Explain : Управление сервоприводами
+# @contact :
+# @Time    : 2020/05/09
+# @File    : XiaoR_servo.py
+# @Software: PyCharm
+
 from builtins import hex, eval, int, object
 from xr_i2c import I2c
 import os
@@ -28,50 +27,50 @@ cfgparser = HandleConfig(path_data)
 
 
 class Servo(object):
-	"""
-	舵机控制类
-	"""
-	def __init__(self):
-		pass
+    """
+    Класс управления сервоприводами
+    """
+    def __init__(self):
+        pass
 
-	def angle_limit(self, angle):
-		"""
-		对舵机角度限幅，防止舵机堵转烧毁
-		"""
-		if angle > cfg.ANGLE_MAX:  # 限制最大角度值
-			angle = cfg.ANGLE_MAX
-		elif angle < cfg.ANGLE_MIN:  # 限制最小角度值
-			angle = cfg.ANGLE_MIN
-		return angle
+    def angle_limit(self, angle):
+        """
+        Ограничивает угол сервопривода, чтобы предотвратить блокировку и повреждение
+        """
+        if angle > cfg.ANGLE_MAX:  # Ограничение максимального угла
+            angle = cfg.ANGLE_MAX
+        elif angle < cfg.ANGLE_MIN:  # Ограничение минимального угла
+            angle = cfg.ANGLE_MIN
+        return angle
 
-	def set(self, servonum, servoangle):
-		"""
-		设置舵机角度
-		:param servonum:舵机号
-		:param servoangle:舵机角度
-		:return:
-		"""
-		angle = self.angle_limit(servoangle)
-		buf = [0xff, 0x01, servonum, angle, 0xff]
-		try:
-			i2c.writedata(i2c.mcu_address, buf)
-		except Exception as e:
-			print('servo write error:', e)
+    def set(self, servonum, servoangle):
+        """
+        Устанавливает угол сервопривода
+        :param servonum: Номер сервопривода
+        :param servoangle: Угол сервопривода
+        :return:
+        """
+        angle = self.angle_limit(servoangle)
+        buf = [0xff, 0x01, servonum, angle, 0xff]
+        try:
+            i2c.writedata(i2c.mcu_address, buf)
+        except Exception as e:
+            print('Ошибка при записи сервопривода:', e)
 
-	def store(self):
-		"""
-		存储舵机角度
-		:return:
-		"""
-		cfgparser.save_data("servo", "angle", cfg.ANGLE)
+    def store(self):
+        """
+        Сохраняет углы сервоприводов
+        :return:
+        """
+        cfgparser.save_data("servo", "angle", cfg.ANGLE)
 
-	def restore(self):
-		"""
-		恢复舵机角度
-		:return:
-		"""
-		cfg.ANGLE = cfgparser.get_data("servo", "angle")
-		for i in range(0, 8):
-			cfg.SERVO_NUM = i + 1
-			cfg.SERVO_ANGLE = cfg.ANGLE[i]
-			self.set(i + 1, cfg.ANGLE[i])
+    def restore(self):
+        """
+        Восстанавливает углы сервоприводов
+        :return:
+        """
+        cfg.ANGLE = cfgparser.get_data("servo", "angle")
+        for i in range(0, 8):
+            cfg.SERVO_NUM = i + 1
+            cfg.SERVO_ANGLE = cfg.ANGLE[i]
+            self.set(i + 1, cfg.ANGLE[i])
