@@ -1,19 +1,18 @@
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
-"""
-@version: python3.7
-@Author  : xiaor
-@Explain :电机控制
-@contact :
-@Time    :2020/05/09
-@File    :xr_motor.py
-@Software: PyCharm
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
+
+# @version: python3.7
+# @Author  : xiaor
+# @Explain : Управление двигателями
+# @contact :
+# @Time    : 2020/05/09
+# @File    : xr_motor.py
+# @Software: PyCharm
+
 from builtins import float, object
 
 import os
@@ -31,19 +30,19 @@ class RobotDirection(object):
 
 	def set_speed(self, num, speed):
 		"""
-		设置电机速度，num表示左侧还是右侧，等于1表示左侧，等于右侧，speed表示设定的速度值（0-100）
+		Установка скорости двигателя, num указывает на левую или правую сторону, 1 - левая, 2 - правая, speed - установленное значение скорости (0-100)
 		"""
 		# print(speed)
-		if num == 1:  # 调节左侧
+		if num == 1:  # Регулировка левой стороны
 			gpio.ena_pwm(speed)
-		elif num == 2:  # 调节右侧
+		elif num == 2:  # Регулировка правой стороны
 			gpio.enb_pwm(speed)
 
 	def motor_init(self):
 		"""
-		获取机器人存储的速度
+		Получение сохраненной скорости робота
 		"""
-		print("获取机器人存储的速度")
+		print("Получение сохраненной скорости робота")
 		speed = cfgparser.get_data('motor', 'speed')
 		cfg.LEFT_SPEED = speed[0]
 		cfg.RIGHT_SPEED = speed[1]
@@ -57,38 +56,38 @@ class RobotDirection(object):
 		cfgparser.save_data('motor', 'speed', speed)
 
 	def m1m2_forward(self):
-		# 设置电机组M1、M2正转
+		# Установка двигателей M1 и M2 на прямую передачу
 		gpio.digital_write(gpio.IN1, True)
 		gpio.digital_write(gpio.IN2, False)
 
 	def m1m2_reverse(self):
-		# 设置电机组M1、M2反转
+		# Установка двигателей M1 и M2 на реверсную передачу
 		gpio.digital_write(gpio.IN1, False)
 		gpio.digital_write(gpio.IN2, True)
 
 	def m1m2_stop(self):
-		# 设置电机组M1、M2停止
+		# Установка двигателей M1 и M2 на остановку
 		gpio.digital_write(gpio.IN1, False)
 		gpio.digital_write(gpio.IN2, False)
 
 	def m3m4_forward(self):
-		# 设置电机组M3、M4正转
+		# Установка двигателей M3 и M4 на прямую передачу
 		gpio.digital_write(gpio.IN3, True)
 		gpio.digital_write(gpio.IN4, False)
 
 	def m3m4_reverse(self):
-		# 设置电机组M3、M4反转
+		# Установка двигателей M3 и M4 на реверсную передачу
 		gpio.digital_write(gpio.IN3, False)
 		gpio.digital_write(gpio.IN4, True)
 
 	def m3m4_stop(self):
-		# 设置电机组M3、M4停止
+		# Установка двигателей M3 и M4 на остановку
 		gpio.digital_write(gpio.IN3, False)
 		gpio.digital_write(gpio.IN4, False)
 
 	def forward(self):
 		"""
-		设置机器人运动方向为前进
+		Установка направления движения робота вперед
 		"""
 		self.set_speed(1, cfg.LEFT_SPEED)
 		self.set_speed(2, cfg.RIGHT_SPEED)
@@ -97,7 +96,7 @@ class RobotDirection(object):
 
 	def back(self):
 		"""
-		#设置机器人运动方向为后退
+		Установка направления движения робота назад
 		"""
 		self.set_speed(1, cfg.LEFT_SPEED)
 		self.set_speed(2, cfg.RIGHT_SPEED)
@@ -106,7 +105,7 @@ class RobotDirection(object):
 
 	def left(self):
 		"""
-		#设置机器人运动方向为左转
+		Установка направления движения робота влево
 		"""
 		self.set_speed(1, cfg.LEFT_SPEED)
 		self.set_speed(2, cfg.RIGHT_SPEED)
@@ -115,7 +114,7 @@ class RobotDirection(object):
 
 	def right(self):
 		"""
-		#设置机器人运动方向为右转
+		Установка направления движения робота вправо
 		"""
 		self.set_speed(1, cfg.LEFT_SPEED)
 		self.set_speed(2, cfg.RIGHT_SPEED)
@@ -124,7 +123,7 @@ class RobotDirection(object):
 
 	def stop(self):
 		"""
-		#设置机器人运动方向为停止
+		Установка направления движения робота на остановку
 		"""
 		self.set_speed(1, 0)
 		self.set_speed(2, 0)

@@ -1,11 +1,11 @@
 # coding:utf-8
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
+
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
 """
 @version: python3.7
 @Author  : xiaor
@@ -33,14 +33,14 @@ class PS2(object):
 
 	def ps2_button(self):
 		"""
-		获取PS2手柄的按键值
-		:return:cfg.PS2_READ_KEY解析后的按键值
-		"""
-		ps2check = i2c.readdata(i2c.ps2_address, 0x01)		# 获取PS2返回的模式值
-		read_key = i2c.readdata(i2c.ps2_address, 0x03)		# 获取PS2返回的按键值
-		read_key1 = i2c.readdata(i2c.ps2_address, 0x04)  	# 获取PS2返回的按键值
+        Получение состояния кнопок PS2-джойстика
+        :return: Значение кнопки после декодирования cfg.PS2_READ_KEY
+        """
+		ps2check = i2c.readdata(i2c.ps2_address, 0x01)  # Получение возвращаемого PS2 режима
+		read_key = i2c.readdata(i2c.ps2_address, 0x03)  # Получение возвращаемых PS2 значений кнопок
+		read_key1 = i2c.readdata(i2c.ps2_address, 0x04)  # Получение возвращаемых PS2 значений кнопок
 		cfg.PS2_READ_KEY = 0
-		if ps2check == 0x41 or ps2check == 0xC1 or ps2check == 0x73 or ps2check == 0xF3:		# PS2普通模式
+		if ps2check == 0x41 or ps2check == 0xC1 or ps2check == 0x73 or ps2check == 0xF3:  # Обычный режим PS2
 			if read_key == 0xef:
 				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_PAD_UP']
 			elif read_key == 0xbf:
@@ -61,41 +61,40 @@ class PS2(object):
 
 	def control(self):
 		"""
-		PS2手柄控制函数
-		:return:
-		"""
-
-		read_ps2 = self.ps2_button()           # 获取按键值
+        Функция управления через джойстик PS2
+        :return:
+        """
+		read_ps2 = self.ps2_button()  # Получение значения кнопки
 		add = 5
-		if cfg.PS2_LASTKEY != read_ps2 and cfg.PS2_LASTKEY != 0:		# 如果上一次的值不是0并且不等于这次的值，说明按键值有变化并且不为0
-			go.stop()		# 按键值有变化时执行一次有且一次停止
-			cfg.LIGHT_STATUS = cfg.STOP		# 将按键状态设置为停止
-			cfg.PS2_LASTKEY = 0		# 给上一次状态赋值0，避免再次进入而停止
+		if cfg.PS2_LASTKEY != read_ps2 and cfg.PS2_LASTKEY != 0:  # Если значение предыдущей кнопки не равно 0 и отличается от текущего значения, это означает изменение значения кнопки и оно не равно 0
+			go.stop()  # При изменении значения кнопки выполнить однократную остановку
+			cfg.LIGHT_STATUS = cfg.STOP  # Установить статус кнопки на остановку
+			cfg.PS2_LASTKEY = 0  # Установить предыдущий статус равным нулю, чтобы избежать повторного входа и остановки
 
 		else:
-			if read_ps2 == cfg.PS2_KEY['PSB_PAD_UP']:  # 等于左侧按键上键
+			if read_ps2 == cfg.PS2_KEY['PSB_PAD_UP']:  # Равно левой кнопке вверх
 				go.forward()
 				time.sleep(0.02)
-				cfg.PS2_LASTKEY = read_ps2	 # 更新上一次的值
+				cfg.PS2_LASTKEY = read_ps2  # Обновить последнее значение
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_DOWN']:  # 等于左侧按键下键
+			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_DOWN']:  # Равно левой кнопке вниз
 				go.back()
 				time.sleep(0.02)
 				cfg.PS2_LASTKEY = read_ps2
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_LEFT']:  # 等于左侧按键左键
+			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_LEFT']:  # Равно левой кнопке влево
 				go.left()
 				cfg.LIGHT_STATUS = cfg.TURN_LEFT
 				time.sleep(0.02)
 				cfg.PS2_LASTKEY = read_ps2
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_RIGHT']:  # 等于左侧按键右键
+			elif read_ps2 == cfg.PS2_KEY['PSB_PAD_RIGHT']:  # Равно левой кнопке вправо
 				go.right()
 				cfg.LIGHT_STATUS = cfg.TURN_RIGHT
 				time.sleep(0.02)
 				cfg.PS2_LASTKEY = read_ps2
 
-			if read_ps2 == cfg.PS2_KEY['PSB_RED']:  # 等于红色按键
+			if read_ps2 == cfg.PS2_KEY['PSB_RED']:  # Равно красной кнопке
 				# print('PSB_RED')
 				if (cfg.ANGLE[6] - add) < 180:
 					cfg.ANGLE[6] = cfg.ANGLE[6] + add
@@ -103,7 +102,7 @@ class PS2(object):
 					cfg.ANGLE[6] = 180
 				servo.set(7, cfg.ANGLE[6])
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_PINK']:  # 等于粉色按键
+			elif read_ps2 == cfg.PS2_KEY['PSB_PINK']:  # Равно розовой кнопке
 				# print('PSB_BLUE')
 				if (cfg.ANGLE[6] - add) > 0:
 					cfg.ANGLE[6] = cfg.ANGLE[6] - add
@@ -111,7 +110,7 @@ class PS2(object):
 					cfg.ANGLE[6] = 0
 				servo.set(7, cfg.ANGLE[6])
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_GREEN']:  # 等于绿色按键
+			elif read_ps2 == cfg.PS2_KEY['PSB_GREEN']:  # Равно зеленой кнопке
 				# print('PSB_GREEN')
 				if (cfg.ANGLE[7] - add) < 155:
 					cfg.ANGLE[7] = cfg.ANGLE[7] + add
@@ -119,7 +118,7 @@ class PS2(object):
 					cfg.ANGLE[7] = 155
 				servo.set(8, cfg.ANGLE[7])
 
-			elif read_ps2 == cfg.PS2_KEY['PSB_BLUE']:  # 等于蓝色按键
+			elif read_ps2 == cfg.PS2_KEY['PSB_BLUE']:  # Равно синей кнопке
 				# print('PSB_PINK')
 				if (cfg.ANGLE[7] - add) > 0:
 					cfg.ANGLE[7] = cfg.ANGLE[7] - add
