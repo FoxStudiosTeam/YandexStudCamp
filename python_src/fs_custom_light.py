@@ -1,7 +1,7 @@
 import time
 
-from python_src.xr_car_light import Car_light, i2c
-from python_src.xr_config import COLOR
+from xr_car_light import Car_light, i2c
+from xr_config import COLOR
 
 
 class CustomLight(Car_light):
