@@ -1,20 +1,18 @@
 # coding:utf-8
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
-"""
-@version: python3.7
-@Author  : xiaor
-@Explain :摄像头识别及小车运动功能
-@contact :
-@Time    :2020/05/09
-@File    :xr_function.py
-@Software: PyCharm
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
+
+# @version: python3.7
+# @Author  : xiaor
+# @Explain : Функции для распознавания камеры и движения машины
+# @contact :
+# @Time    : 2020/05/09
+# @File    : xr_function.py
+# @Software: PyCharm
 
 from builtins import float, object, bytes
 
@@ -38,31 +36,31 @@ class Function(object):
 
 	def linepatrol_control(self):
 		"""
-		摄像头巡线小车运动
-		:return:
-		"""
+        Управление движением машины для следования по линии
+        :return:
+        """
 		while cfg.CAMERA_MOD == 1:
-			dx = cfg.LINE_POINT_TWO - cfg.LINE_POINT_ONE			# 上与下取样点中心坐标差值
-			mid = int(cfg.LINE_POINT_ONE + cfg.LINE_POINT_TWO) / 2	# 上与下取样点中心坐标均值
+			dx = cfg.LINE_POINT_TWO - cfg.LINE_POINT_ONE  # Разность центрального положения верхней и нижней точек
+			mid = int((cfg.LINE_POINT_ONE + cfg.LINE_POINT_TWO) / 2)  # Среднее положение центрального положения верхней и нижней точек
 
-			print("dx==%d" % dx)			# 打印上与下取样点中心坐标差值
-			print("mid==%s" % mid)			# 打印上与下取样点中心坐标均值
+			print("dx==%d" % dx)  # Печать разности центрального положения верхней и нижней точек
+			print("mid==%s" % mid)  # Печать среднего положения центрального положения верхней и нижней точек
 
-			if 0 < mid < 260:				# 如果巡线中心点偏左，说明车子右偏离轨道,就需要左转来校正。
+			if 0 < mid < 260:  # Если центр линии смещен влево, значит машина отклонена вправо от траектории, необходимо повернуть влево для корректировки
 				print("turn left")
 				go.left()
-			elif mid > 420:					# 如果巡线中心点偏右，说明车子左偏离轨道，就需要右转来校正。
+			elif mid > 420:  # Если центр линии смещен вправо, значит машина отклонена влево от траектории, необходимо повернуть вправо для корректировки
 				print("turn right")
 				go.right()
-			else:							# 如果巡线中心点居中情况
-				if dx > 45:
-					print("turn left")		# 线有右倾斜的趋势
+			else:  # Если центр линии находится посередине
+				if dx > 45:  # Если линия имеет тенденцию к правому наклону
+					print("turn left")
 					go.left()
-				elif dx < -45:
-					print("turn right")		# 线有左倾斜的趋势
+				elif dx < -45:  # Если линия имеет тенденцию к левому наклону
+					print("turn right")
 					go.right()
-				else:
-					print("go stright")		# 线在中心位置，并且线处于竖直状态
+				else:  # Если линия находится в вертикальном положении
+					print("go stright")
 					go.forward()
 			time.sleep(0.007)
 			go.stop()
@@ -70,36 +68,36 @@ class Function(object):
 
 	def qrcode_control(self):
 		"""
-		二维码检测识别控制小车运动
-		:return:
-		"""
-		cfg.LASRT_LEFT_SPEED = cfg.LEFT_SPEED  # 将当前速度保存
+        Управление движением машины для распознавания QR-кодов
+        :return:
+        """
+		cfg.LASRT_LEFT_SPEED = cfg.LEFT_SPEED  # Сохранение текущего значения скорости
 		cfg.LASRT_RIGHT_SPEED = cfg.RIGHT_SPEED
-		cfg.LEFT_SPEED = 30		# 设置合适的速度
+		cfg.LEFT_SPEED = 30  # Установка подходящей скорости
 		cfg.RIGHT_SPEED = 30
 		code_status = 0
 		while cfg.CAMERA_MOD == 4:
 			time.sleep(0.05)
-			if cfg.BARCODE_DATE == 'start':		# 检测到起始信号，start的二维码
-				#print(cfg.BARCODE_DATE)
+			if cfg.BARCODE_DATE == 'start':  # Проверка начала сигнала, проверка QR-кода 'start'
+				# print(cfg.BARCODE_DATE)
 				buf = bytes([0xff, 0x13, 0x0a, 0x00, 0xff])
 				socket.sendbuf(buf)
-				#cfg.LIGHT_STATUS = cfg.TURN_FORWARD
+				# cfg.LIGHT_STATUS = cfg.TURN_FORWARD
 				car_light.set_ledgroup(cfg.CAR_LIGHT, 8, cfg.COLOR['blue'])
 				time.sleep(1.5)
-				code_status = 1						# code_status
-			elif cfg.BARCODE_DATE == 'stop':	# 检测到结束信号，stop的二维码
-				#print(cfg.BARCODE_DATE)
+				code_status = 1  # code_status
+			elif cfg.BARCODE_DATE == 'stop':  # Проверка окончания сигнала, проверка QR-кода 'stop'
+				# print(cfg.BARCODE_DATE)
 				buf = bytes([0xff, 0x13, 0x0a, 0x01, 0xff])
 				socket.sendbuf(buf)
-				#cfg.LIGHT_STATUS = cfg.STOP
+				# cfg.LIGHT_STATUS = cfg.STOP
 				car_light.set_ledgroup(cfg.CAR_LIGHT, 8, cfg.COLOR['white'])
 				time.sleep(1.5)
-				code_status = 0						# code_status
+				code_status = 0  # code_status
 
 			if code_status:
-				if cfg.BARCODE_DATE == 'forward':	# 检测到forward的二维码，小车前进
-					#print("forward")
+				if cfg.BARCODE_DATE == 'forward':  # Проверка QR-кода 'forward', движение машины вперед
+					# print("forward")
 					buf = bytes([0xff, 0x13, 0x0a, 0x02, 0xff])
 					socket.sendbuf(buf)
 					cfg.LIGHT_STATUS = cfg.TURN_FORWARD
@@ -107,8 +105,8 @@ class Function(object):
 					time.sleep(2.5)
 					go.stop()
 					time.sleep(0.5)
-				elif cfg.BARCODE_DATE == 'back':	# 检测到back的二维码，小车后退
-					#print("back")
+				elif cfg.BARCODE_DATE == 'back':  # Проверка QR-кода 'back', движение машины назад
+					# print("back")
 					buf = bytes([0xff, 0x13, 0x0a, 0x03, 0xff])
 					socket.sendbuf(buf)
 					cfg.LIGHT_STATUS = cfg.TURN_BACK
@@ -116,8 +114,8 @@ class Function(object):
 					time.sleep(2.5)
 					go.stop()
 					time.sleep(0.5)
-				elif cfg.BARCODE_DATE == 'left':	# 检测到left的二维码，小车左转
-					#print("left")
+				elif cfg.BARCODE_DATE == 'left':  # Проверка QR-кода 'left', поворот машины влево
+					# print("left")
 					buf = bytes([0xff, 0x13, 0x0a, 0x04, 0xff])
 					socket.sendbuf(buf)
 					cfg.LIGHT_STATUS = cfg.TURN_LEFT
@@ -125,8 +123,8 @@ class Function(object):
 					time.sleep(1.5)
 					go.stop()
 					time.sleep(0.5)
-				elif cfg.BARCODE_DATE == 'right':	# 检测到right的二维码，小车右转
-					#print("right")
+				elif cfg.BARCODE_DATE == 'right':  # Проверка QR-кода 'right', поворот машины вправо
+					# print("right")
 					buf = bytes([0xff, 0x13, 0x0a, 0x05, 0xff])
 					socket.sendbuf(buf)
 					cfg.LIGHT_STATUS = cfg.TURN_RIGHT
@@ -135,9 +133,9 @@ class Function(object):
 					go.stop()
 					time.sleep(0.5)
 				else:
-					#print("go.forward")
+					# print("go.forward")
 					cfg.LIGHT_STATUS = cfg.STOP
-					#go.forward()
+					# go.forward()
 			else:
 				go.stop()
 				time.sleep(0.05)

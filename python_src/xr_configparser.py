@@ -1,48 +1,45 @@
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
-"""
-@version: python3.7
-@Author  : xiaor
-@Explain :封装配置文件
-@contact :
-@Time    :2020/05/09
-@File    :xr_configparser.py
-@Software: PyCharm
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
+
+# @version: python3.7
+# @Author  : xiaor
+# @Explain : Упаковка конфигурационного файла
+# @contact :
+# @Time    : 2020/05/09
+# @File    : xr_configparser.py
+# @Software: PyCharm
+
 from configparser import ConfigParser
 
 
 class HandleConfig:
     """
-    配置文件读写数据的封装
+    Пакет для чтения и записи данных конфигурации
     """
     def __init__(self, filename):
         """
-        :param filename: 配置文件名
+        :param filename: имя файла конфигурации
         """
         self.filename = filename
-        self.config = ConfigParser()        # 读取配置文件1.创建配置解析器
-        self.config.read(self.filename, encoding="utf-8")   # 读取配置文件2.指定读取的配置文件
+        self.config = ConfigParser()  # Создание парсера конфигурации для чтения файла
+        self.config.read(self.filename, encoding="utf-8")  # Чтение конфигурационного файла
 
     def save_data(self, group, key, data):
-
-        if not self.config.has_section(group):  # 判断section是否存在
-            self.config.add_section(group)      # 不存在则添加
-        self.config.set(group, key, str(data))  # 修改section
-        with open(self.filename, "w") as file:  # 保存到哪个文件filename=需要指定文件名
+        if not self.config.has_section(group):  # Проверка наличия секции
+            self.config.add_section(group)  # Добавить секцию, если она отсутствует
+        self.config.set(group, key, str(data))  # Запись данных в секцию
+        with open(self.filename, "w") as file:  # Сохранение в файл
             self.config.write(file)
 
     def get_data(self, group, key):
-        data = self.get_value(group, key)  # 读取什么内容
+        data = self.get_value(group, key)  # Чтение данных
         data = str(data)[1:-1].split(',')
         data = list(map(int, data))
         return data
 
-    # get_value获取所有的字符串，section区域名, option选项名
     def get_value(self, section, option):
         return self.config.get(section, option)
