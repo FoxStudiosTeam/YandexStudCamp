@@ -1,20 +1,18 @@
 # coding:utf-8
-"""
-树莓派WiFi无线视频小车机器人驱动源码
-作者：Sence
-版权所有：小R科技（深圳市小二极客科技有限公司www.xiao-r.com）；WIFI机器人网论坛 www.wifi-robots.com
-本代码可以自由修改，但禁止用作商业盈利目的！
-本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
-"""
-"""
-@version: python3.7
-@Author  : xiaor
-@Explain :车灯相关功能
-@contact :
-@Time    :2020/05/09
-@File    :xr_car_light.py
-@Software: PyCharm
-"""
+# Код драйвера робота Raspberry Pi WiFi
+# Автор: Sence
+# Авторское право: Xiao-R Technology Co., Ltd. (Shenzhen Xiao Er Geek Tech Co., Ltd.) www.xiao-r.com
+# WIFI Robot Forum: www.wifi-robots.com
+# Этот код можно свободно модифицировать, но его запрещено использовать в коммерческих целях!
+# На этот код подана заявка на защиту авторских прав на программное обеспечение. При обнаружении нарушения немедленно будет подан иск!
+
+# @version: python3.7
+# @Author  : xiaor
+# @Explain : Функции для фар автомобиля
+# @contact :
+# @Time    : 2020/05/09
+# @File    : xr_car_light.py
+# @Software: PyCharm
 
 from builtins import int, range
 import xr_config as cfg
@@ -31,12 +29,12 @@ class Car_light(object):
 
 	def set_led(self, group, num, color):
 		"""
-		设置RGB灯的状态
-		:param group:灯组，等于1为电量灯，2为车灯
-		:param num:灯的索引
-		:param color:设置颜色，在config中COLOR可选对应颜色，只能设置已定义好的颜色
-		:return:
-		"""
+        Установка состояния светодиодов RGB
+        :param group: группа светодиодов, равна 1 для индикаторов заряда батареи, 2 для фар автомобиля
+        :param num: индекс светодиода
+        :param color: устанавливаемый цвет, в конфигурации COLOR можно выбрать соответствующий цвет, допустимо установить только определенные цвета
+        :return:
+        """
 		if 0 < num < 9 and 0 < group < 3 and color < 9:
 			sendbuf = [0xff, group + 3, num, color, 0xff]
 			i2c.writedata(i2c.mcu_address, sendbuf)
@@ -45,12 +43,12 @@ class Car_light(object):
 
 	def set_ledgroup(self, group, count, color):
 		"""
-		设置RGB灯数量的状态
-		:param group:灯组，等于1为电量灯，2为车灯
-		:param count:灯的数量
-		:param color:设置颜色，在config中COLOR可选对应颜色，只能设置已定义好的颜色
-		:return:
-		"""
+        Установка состояния группы светодиодов RGB
+        :param group: группа светодиодов, равна 1 для индикаторов заряда батареи, 2 для фар автомобиля
+        :param count: количество светодиодов
+        :param color: устанавливаемый цвет, в конфигурации COLOR можно выбрать соответствующий цвет, допустимо установить только определенные цвета
+        :return:
+        """
 		if 0 < count < 9 and 0 < group < 3 and color < 9:
 			sendbuf = [0xff, group + 1, count, color, 0xff]
 			i2c.writedata(i2c.mcu_address, sendbuf)
@@ -59,27 +57,27 @@ class Car_light(object):
 
 	def open_light(self):
 		"""
-		全车灯打开
-		:return:
-		"""
+        Включить все фары автомобиля
+        :return:
+        """
 		# print("车灯全部打开")
 		self.set_ledgroup(cfg.CAR_LIGHT, 8, cfg.COLOR['white'])
 		time.sleep(0.01)
 
 	def close_light(self):
 		"""
-		全车灯关闭
-		:return:
-		"""
+        Выключить все фары автомобиля
+        :return:
+        """
 		# print("车灯全部关闭")
 		self.set_ledgroup(cfg.CAR_LIGHT, 8, cfg.COLOR['black'])
 		time.sleep(0.01)
 
 	def left_turn_light(self):
 		"""
-		左转流水灯
-		:return:
-		"""
+        Левый поворотный свет
+        :return:
+        """
 		# print("左转")
 		self.set_led(cfg.CAR_LIGHT, 6, cfg.COLOR['red'])
 		time.sleep(0.12)
@@ -92,9 +90,9 @@ class Car_light(object):
 
 	def right_turn_light(self):
 		"""
-		右转流水灯
-		:return:
-		"""
+        Правый поворотный свет
+        :return:
+        """
 		self.set_led(cfg.CAR_LIGHT, 3, cfg.COLOR['red'])
 		time.sleep(0.12)
 		self.set_led(cfg.CAR_LIGHT, 2, cfg.COLOR['red'])
@@ -126,9 +124,9 @@ class Car_light(object):
 
 	def init_led(self):
 		"""
-		启动状态车灯
-		:return:
-		"""
+        Инициализация светового режима автомобиля
+        :return:
+        """
 		self.set_ledgroup(cfg.CAR_LIGHT, 8, cfg.COLOR['black'])
 		for j in range(8):
 			for i in range(8):
