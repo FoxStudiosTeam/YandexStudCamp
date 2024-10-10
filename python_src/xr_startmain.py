@@ -6,6 +6,8 @@
 本代码可以自由修改，但禁止用作商业盈利目的！
 本代码已申请软件著作权保护，如有侵权一经发现立即起诉！
 """
+from python_src.fs_custom_light import CustomLight
+
 """
 @version: python3.7
 @Author  : xiaor
@@ -243,7 +245,12 @@ if __name__ == '__main__':
 	except:
 		print('oled initialization fail')
 car_light.init_led() 	# 车灯秀
+
+fs_custom_light = CustomLight(car_light)
 time.sleep(0.1)
+
+
+
 
 threads = []  # 创建一个线程序列
 t1 = threading.Thread(target=camera.run, args=())  # 摄像头数据收集处理线程
@@ -254,6 +261,8 @@ t3 = threading.Thread(target=socket.tcp_server, args=())  # 新建wifi tcp通信
 threads.append(t3)
 t4 = threading.Thread(target=voice.run, args=())  	# 语音模块线程
 threads.append(t4)
+t5 = threading.Thread(target=fs_custom_light.run, args=())
+threads.append(t5)
 
 ti = threading.Timer(0.1, status)		# 新建一个定时器
 ti.start()		# 开启定时器
