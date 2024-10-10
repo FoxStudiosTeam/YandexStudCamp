@@ -20,8 +20,8 @@ class CustomLight(Car_light):
 
         while True:
 
-            self.set_led(num=i, color=2)
-            self.set_led(num=j, color=8)
+            self.set_led(num=i, color='white')
+            self.set_led(num=j, color='orange')
 
             i += 1
             j -= 1
