@@ -4,13 +4,11 @@ from tkinter import *
 nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
-queue = a_star_path.a_star_simple(nodes[0], nodes[5],nodes)
+queue = a_star_path.a_star_simple(nodes[0], nodes[13],nodes)
 
 root = Tk()
-width = 800
-height = 600
 
-canvas = Canvas(root, width=width, height=height)
+canvas = Canvas(root)
 
 offset_x = 0
 offset_y = 0
@@ -34,18 +32,21 @@ for node in nodes:
     x1 = x0+10
     y0 = node.y*10
     y1 = y0+10
-
+    color = 'white'
+    if node.x == 1 and node.y == 0: color='black'
 
     if node.is_block == True:
         canvas.create_rectangle(x0, y0, x1, y1, fill='red')
     else:
-        canvas.create_rectangle(x0,y0,x1,y1,fill='white')
+        canvas.create_rectangle(x0,y0,x1,y1,fill=color)
+    
 
 path = []
 while len(queue.queue) > 0:
     item : tuple[int, Node] = queue.get()
     path.append(item[1])
 
+path.reverse()
 for i in range (len(path)-1):
     x0 = path[i].x*10 + 5
     y0 = path[i].y*10 + 5

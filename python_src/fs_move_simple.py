@@ -3,17 +3,6 @@ from queue import PriorityQueue
 from enum import Enum
 
 
-class Direction(Enum):
-    FORWARD = 1
-    FORWARD_LEFT = 2
-    FORWARD_RIGHT = 3
-    LEFT = 4
-    RIGHT = 5
-    BACK = 6
-    BACK_LEFT = 7
-    BACK_RIGHT = 8
-
-
 class Node:
     def __init__(self, parent, x, y, is_block):
         self.x = x
@@ -93,7 +82,7 @@ class AStarPath():
 
 def create_graph():
     nodes = []
-    modifier = 2
+    modifier = 4
     for x in range(8*modifier):
         for y in range(6*modifier):
             local_node = Node(None, x, y, False)
@@ -106,3 +95,5 @@ def test_graph():
     nodes = create_graph()
     a_star_path = AStarPath(nodes)
     return a_star_path.a_star_simple(nodes[0], nodes[0], nodes)
+
+
