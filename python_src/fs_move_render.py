@@ -33,7 +33,6 @@ for node in nodes:
     y0 = node.y*10
     y1 = y0+10
     color = 'white'
-    if node.x == 1 and node.y == 0: color='black'
 
     if node.is_block == True:
         canvas.create_rectangle(x0, y0, x1, y1, fill='red')
