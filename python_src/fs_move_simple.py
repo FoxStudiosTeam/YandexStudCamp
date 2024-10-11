@@ -89,13 +89,13 @@ class AStarPath():
             queue.put((j, minimal))
 
             current_node = minimal
-        return queue
 
 
 def create_graph():
     nodes = []
-    for x in range(8):
-        for y in range(6):
+    modifier = 2
+    for x in range(8*modifier):
+        for y in range(6*modifier):
             local_node = Node(None, x, y, False)
             nodes.append(local_node)
 
@@ -105,8 +105,4 @@ def create_graph():
 def test_graph():
     nodes = create_graph()
     a_star_path = AStarPath(nodes)
-    result = a_star_path.a_star_simple(nodes[0], nodes[22], nodes)
-    print(len(result))
-
-
-test_graph()
+    return a_star_path.a_star_simple(nodes[0], nodes[0], nodes)
