@@ -16,11 +16,22 @@ class Direction(Enum):
 
 
 class Determining():
+    '''
+    Направление относительно сетки координат, которую строит граф:
+    [00] [10] [20]
+    [01] [11] [21]
+    [02] [12] [22]
+    FORWARD - вверх
+    BACK - вниз
+    '''
     def __init__(self, cur_node : Node, next_node : Node):
-        dir_x = cur_node.x - next_node.x
-        dir_y = cur_node.y - next_node.y
-        if dir_x > 0 and dir_y > 0: return Direction.FORWARD_LEFT
-        if dir_x > 0 and dir_y < 0: return Direction.BACK_LEFT
-        if dir_x < 0 and dir_y > 0: return Direction.FORWARD_RIGHT
-        if dir_x < 0 and dir_y < 0: return Direction.BACK_RIGHT
-        if dir_x == 0 and dir_y > 1: return Direction.BACK
+        dir_x = next_node.x - cur_node.x
+        dir_y = next_node.y - cur_node.y
+        if dir_x > 0 and dir_y > 0: return Direction.BACK_RIGHT
+        if dir_x > 0 and dir_y < 0: return Direction.FORWARD_RIGHT
+        if dir_x < 0 and dir_y > 0: return Direction.BACK_LEFT
+        if dir_x < 0 and dir_y < 0: return Direction.FORWARD_LEFT
+        if dir_x == 0 and dir_y > 0: return Direction.BACK
+        if dir_x == 0 and dir_y < 0: return Direction.FORWARD
+        if dir_x > 0 and dir_y == 0: return Direction.RIGHT
+        if dir_x < 0 and dir_y == 0: return Direction.LEFT
