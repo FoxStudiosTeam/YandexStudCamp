@@ -19,10 +19,10 @@ class Node:
         self.x = x
         self.y = y
         self.parent = parent
-        self.is_block = is_block,
-        self.g_cost = 0,
-        self.h_cost = 0,
-        self.f_cost = 0
+        self.is_block = is_block
+        self.g_cost: float = 0
+        self.h_cost: float = 0
+        self.f_cost: float = 0
 
     def re_calc_f_cost(self):
         self.f_cost = self.g_cost + self.h_cost
@@ -39,14 +39,25 @@ class AStarPath():
         neighbors = []
 
         for local_node in self.nodes:
-            local_node.g_cost = self.distance(local_node, start_node)
+            if local_node == end_node:
+                local_node.f_cost = 0
+
             local_node.h_cost = self.distance(local_node, end_node)
             local_node.f_cost = local_node.g_cost + local_node.h_cost
 
-            if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node.is_block != True:
+            if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and (
+                (local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node.is_block != True:
+                neighbors.append(local_node)
+            elif (((local_node.x == node.x) and ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) or (
+                (local_node.y == node.y) and ((local_node.x == node.x + 1) or (
+                local_node.x == node.x - 1)))) and local_node.is_block != True and local_node != node:
                 neighbors.append(local_node)
 
+    # if((local_node.x == node.x and local_node.y != node.y) or (local_node.x != node.x and local_node.y == node.y)) and local_node.is_block != True:
+    #     neighbors.append(local_node)
+
         return neighbors
+
 
     def a_star_simple(self, start_node: Node, end_node: Node, nodes: list[Node]):
         queue = PriorityQueue()
@@ -54,9 +65,9 @@ class AStarPath():
         is_end = False
         current_node = start_node
         j = 1
-        while is_end != True:
+        while True:
             if current_node == end_node:
-                is_end = True
+                return queue
 
             if current_node.is_block == True:
                 continue
@@ -65,6 +76,7 @@ class AStarPath():
 
             minimal: Node = None
             i = 0
+
             for neighbor in neighbors:
                 if i == 0:
                     minimal = neighbor
@@ -73,8 +85,9 @@ class AStarPath():
                     minimal = neighbor
                 i += 1
 
+            j += 1
             queue.put((j, minimal))
-            j+=1;
+
             current_node = minimal
         return queue
 
@@ -92,7 +105,8 @@ def create_graph():
 def test_graph():
     nodes = create_graph()
     a_star_path = AStarPath(nodes)
-    a_star_path.a_star_simple(nodes[0], nodes[10],nodes)
+    result = a_star_path.a_star_simple(nodes[0], nodes[22], nodes)
+    print(len(result))
 
 
 test_graph()
