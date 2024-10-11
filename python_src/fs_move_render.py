@@ -1,4 +1,4 @@
-from python_src.fs_move_simple import AStarPath, create_graph, Node
+from fs_move_simple import AStarPath, create_graph, Node
 from tkinter import *
 
 nodes = create_graph()

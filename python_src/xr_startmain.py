@@ -20,6 +20,8 @@ import time
 import threading
 from threading import Timer
 from subprocess import call
+
+from fs_motor import FSMover
 from xr_car_light import Car_light
 #car_light = Car_light()
 import xr_config as cfg
@@ -244,6 +246,12 @@ if __name__ == '__main__':
 
 fs_custom_light = CustomLight()
 time.sleep(0.1)
+fs_motor = FSMover()
+
+def run_fs():
+	fs_motor.forward()
+
+
 
 
 
@@ -304,7 +312,9 @@ while True:
 			if cfg.PS2_LOOPS > 20:
 				ps2.control()
 				cfg.PS2_LOOPS = 0
-		cruising_mode()  # Выполнить функцию выбора режима в основном потоке
+		#cruising_mode()  # Выполнить функцию выбора режима в основном потоке
+		#cruising_mode()
+
 	except Exception as e:  # Ловить и печатать ошибку
 		time.sleep(0.1)
 		print('Ошибка cruising_mod:', e)
