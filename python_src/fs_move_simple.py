@@ -33,7 +33,7 @@ class AStarPath():
         self.nodes = nodes
 
     def distance(self, from_point: Node, target_point: Node):
-        return math.sqrt(math.pow((target_point.x - from_point), 2) + math.pow((target_point.y - from_point.y), 2))
+        return math.sqrt(math.pow((target_point.x - from_point.x), 2) + math.pow((target_point.y - from_point.y), 2))
 
     def get_neighbors(self, start_node: Node, node: Node, end_node: Node):
         neighbors = []
@@ -43,8 +43,7 @@ class AStarPath():
             local_node.h_cost = self.distance(local_node, end_node)
             local_node.f_cost = local_node.g_cost + local_node.h_cost
 
-            if ((local_node.x == node.x + 1) or (local_node.x == node.x - 1) or (local_node.y == node.y + 1) or (
-                    local_node.y == node.y - 1)) and local_node.is_block != True:
+            if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node.is_block != True:
                 neighbors.append(local_node)
 
         return neighbors
@@ -54,13 +53,12 @@ class AStarPath():
         queue.put((0, start_node))
         is_end = False
         current_node = start_node
-
-        while is_end:
+        j = 1
+        while is_end != True:
             if current_node == end_node:
-                queue.put(end_node)
                 is_end = True
 
-            if current_node.is_block:
+            if current_node.is_block == True:
                 continue
 
             neighbors = self.get_neighbors(start_node, current_node, end_node)
@@ -75,6 +73,8 @@ class AStarPath():
                     minimal = neighbor
                 i += 1
 
+            queue.put((j, minimal))
+            j+=1;
             current_node = minimal
         return queue
 
@@ -92,7 +92,7 @@ def create_graph():
 def test_graph():
     nodes = create_graph()
     a_star_path = AStarPath(nodes)
-    # a_star_path.a_star_simple(nodes[0], nodes[4],nodes)
+    a_star_path.a_star_simple(nodes[0], nodes[10],nodes)
 
 
 test_graph()

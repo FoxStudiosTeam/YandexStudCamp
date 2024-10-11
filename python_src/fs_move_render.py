@@ -4,7 +4,7 @@ from tkinter import *
 nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
-queue = a_star_path.a_star_simple(nodes[0], nodes[1],nodes)
+queue = a_star_path.a_star_simple(nodes[0], nodes[10],nodes)
 
 root = Tk()
 width = 600
