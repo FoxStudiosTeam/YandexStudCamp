@@ -106,7 +106,3 @@ def test_graph():
     nodes = create_graph()
     a_star_path = AStarPath(nodes)
     result = a_star_path.a_star_simple(nodes[0], nodes[22], nodes)
-    print(len(result))
-
-
-test_graph()

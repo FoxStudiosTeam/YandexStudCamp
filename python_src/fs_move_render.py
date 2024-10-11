@@ -1,4 +1,4 @@
-from python_src.fs_move_simple import AStarPath, create_graph, Node
+from fs_move_simple import AStarPath, create_graph, Node
 from tkinter import *
 
 nodes = create_graph()
@@ -40,6 +40,16 @@ for node in nodes:
         canvas.create_rectangle(x0, y0, x1, y1, fill='red')
     else:
         canvas.create_rectangle(x0,y0,x1,y1,fill='white')
+
+last : tuple[int, Node] = queue.get()
+while queue.not_empty:
+    x0 = last[1].x + 10 + last[1].x*20
+    y0 = last[1].y + 10 + last[1].y*20
+    next : tuple[int, Node] = queue.get()
+    x1 = last[1].x + 10 + last[1].x*20
+    y1 = last[1].y + 10 + last[1].y*20
+    canvas.create_line(x0,y0,x1,y1, fill='blue')
+    last = next
 
 canvas.pack()
 root.mainloop()
