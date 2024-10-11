@@ -4,10 +4,10 @@ from tkinter import *
 nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
-queue = a_star_path.a_star_simple(nodes[0], nodes[10],nodes)
+queue = a_star_path.a_star_simple(nodes[0], nodes[5],nodes)
 
 root = Tk()
-width = 600
+width = 800
 height = 600
 
 canvas = Canvas(root, width=width, height=height)
@@ -30,10 +30,10 @@ for node in nodes:
     i += 0
 
 for node in nodes:
-    x0 = node.x + node.x*20
-    x1 = x0+20
-    y0 = node.y + node.y*20
-    y1 = y0+20
+    x0 = node.x*10
+    x1 = x0+10
+    y0 = node.y*10
+    y1 = y0+10
 
 
     if node.is_block == True:
@@ -41,15 +41,17 @@ for node in nodes:
     else:
         canvas.create_rectangle(x0,y0,x1,y1,fill='white')
 
-last : tuple[int, Node] = queue.get()
-while queue.not_empty:
-    x0 = last[1].x + 10 + last[1].x*20
-    y0 = last[1].y + 10 + last[1].y*20
-    next : tuple[int, Node] = queue.get()
-    x1 = last[1].x + 10 + last[1].x*20
-    y1 = last[1].y + 10 + last[1].y*20
-    canvas.create_line(x0,y0,x1,y1, fill='blue')
-    last = next
+path = []
+while len(queue.queue) > 0:
+    item : tuple[int, Node] = queue.get()
+    path.append(item[1])
+
+for i in range (len(path)-1):
+    x0 = path[i].x*10 + 5
+    y0 = path[i].y*10 + 5
+    x1 = path[i+1].x*10 + 5
+    y1 = path[i+1].y*10 + 5
+    canvas.create_line(x0, y0, x1, y1, fill='blue', width=3)
 
 canvas.pack()
 root.mainloop()
