@@ -1,9 +1,8 @@
 import time
 
-from fs_movement import Direction
 import xr_config as cfg
+from fs_move_simple import Direction
 from xr_motor import RobotDirection
-
 
 class FSMover(RobotDirection):
 
