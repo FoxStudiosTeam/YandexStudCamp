@@ -1,10 +1,11 @@
 from fs_move_simple import AStarPath, create_graph, Node
 from tkinter import *
+import random
 
 nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
-queue = a_star_path.a_star_simple(nodes[0], nodes[13],nodes)
+queue = a_star_path.a_star_new(nodes[0], nodes[196],nodes)
 
 root = Tk()
 
@@ -27,14 +28,16 @@ for node in nodes:
         maxY = node
     i += 0
 
+end_node = ((queue.queue)[len(queue.queue)-1])[1]
 for node in nodes:
     x0 = node.x*10
     x1 = x0+10
     y0 = node.y*10
     y1 = y0+10
     color = 'white'
+    if node == end_node: canvas.create_rectangle(x0, y0, x1, y1, fill='orange')
 
-    if node.is_block == True:
+    elif node.is_block == True:
         canvas.create_rectangle(x0, y0, x1, y1, fill='red')
     else:
         canvas.create_rectangle(x0,y0,x1,y1,fill=color)
