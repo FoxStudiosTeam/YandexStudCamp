@@ -1,7 +1,5 @@
 import math
 from queue import PriorityQueue
-from enum import Enum
-
 
 class Node:
     def __init__(self, parent : object, x, y, is_block):
