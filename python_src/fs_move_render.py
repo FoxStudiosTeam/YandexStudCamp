@@ -1,11 +1,10 @@
 from fs_move_simple import AStarPath, create_graph, Node
 from tkinter import *
-import random
 
 nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
-queue = a_star_path.a_star_new(nodes[0], nodes[196],nodes)
+queue = a_star_path.a_star_simple(nodes[0], nodes[196],nodes)
 
 root = Tk()
 

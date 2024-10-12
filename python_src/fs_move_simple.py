@@ -41,50 +41,16 @@ class AStarPath():
                 ((local_node.y == node.y) and ((local_node.x == node.x + 1) or (local_node.x == node.x - 1)))) and local_node != node:
                 neighbors.append(local_node)
 
-    # if((local_node.x == node.x and local_node.y != node.y) or (local_node.x != node.x and local_node.y == node.y)) and local_node.is_block != True:
-    #     neighbors.append(local_node)
-
         return neighbors
 
 
     def a_star_simple(self, start_node: Node, end_node: Node, nodes: list[Node]):
         queue = PriorityQueue()
         queue.put((0, start_node))
-        is_end = False
-        current_node = start_node
-        j = 1
-        while True:
-            if current_node == end_node:
-                return queue
-
-            if current_node.is_block == True:
-                continue
-
-            neighbors = self.get_neighbors(start_node, current_node, end_node)
-
-            minimal: Node = None
-            i = 0
-
-            for neighbor in neighbors:
-                if i == 0:
-                    minimal = neighbor
-
-                if neighbor.f_cost < minimal.f_cost:
-                    minimal = neighbor
-                i += 1
-
-            j += 1
-            queue.put((j, minimal))
-
-            current_node = minimal
-
-
-    def a_star_new(self, start_node: Node, end_node: Node, nodes: list[Node]):
-        queue = PriorityQueue()
-        queue.put((0, start_node))
         current_node = start_node
         recent : list[Node] = []
         j = 1
+        
         while True:
             if current_node == end_node:
                 return queue
@@ -113,6 +79,7 @@ class AStarPath():
             queue.put((j, minimal))
             recent.append(current_node)
             current_node = minimal
+
 
 def create_graph():
     nodes = []
