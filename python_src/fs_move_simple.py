@@ -171,8 +171,8 @@ def create_graph():
     modifier = 4
     for x in range(8*modifier):
         for y in range(6*modifier):
-            #if ((((x >= 7 and x <= 12) or (x >= 19 and x <= 24))  and y == 3) or (x == 7 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20))) or (y == 20 and ((x >= 7 and x <= 12) or (x >= 19 and x <= 24))) or (x == 24 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20)))):
-            if x == 12 and y > 1:
+            if ((((x >= 7 and x <= 12) or (x >= 19 and x <= 24))  and y == 3) or (x == 7 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20))) or (y == 20 and ((x >= 7 and x <= 12) or (x >= 19 and x <= 24))) or (x == 24 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20)))):
+            #if x == 12 and y > 1:
                 nodes.append(Node(None, x, y, True))
             else:
                 local_node = Node(None, x, y, False)

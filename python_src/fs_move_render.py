@@ -5,8 +5,8 @@ nodes = create_graph()
 a_star_path = AStarPath(nodes)
 
 # queue = a_star_path.a_star_simple(nodes[0], nodes[510],nodes)
-#path = a_star_path.a_star_simple(nodes[0], nodes[208])
-path = a_star_path.a_star_simple(nodes[0], nodes[526])
+path = a_star_path.a_star_simple(nodes[0], nodes[208])
+#path = a_star_path.a_star_simple(nodes[0], nodes[526])
 
 root = Tk()
 
