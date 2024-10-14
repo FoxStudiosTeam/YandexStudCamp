@@ -25,7 +25,7 @@ from fs_motor import FSMover
 import xr_config as cfg
 import fs_event as fs_ev
 from fs_move_simple import Direction
-from fs_event import bus
+import fs_event as fs_ev
 from fs_move_hand import Hand
 from fs_movement import FsMovement
 from xr_motor import RobotDirection
@@ -338,7 +338,9 @@ while True:
 
 
 
-            Hand().test_move()
+            fs_ev.bus.emit('first_move', fs_motor, i)
+
+            Hand().base_state()
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
