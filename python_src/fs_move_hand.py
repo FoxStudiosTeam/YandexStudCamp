@@ -1,3 +1,4 @@
+
 from xr_i2c import I2c
 import time
 
@@ -17,4 +18,5 @@ class Hand:
         i2c.writedata(i2c.mcu_address, send4)
         i2c.writedata(i2c.mcu_address, send5)
         time.sleep(1)
+        print(send4[3])
 
