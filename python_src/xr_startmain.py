@@ -4,6 +4,8 @@
 # Все права защищены: XiaoR Technology (глубоко интегрированная компания Shenzhen XiaoEr Geek Technology Co., Ltd.; www.xiao-r.com) и форум WIFI-роботов www.wifi-robots.com
 # Этот код может быть свободно изменен, но запрещено использовать его в коммерческих целях!
 # На этот код подана заявка на защиту авторских прав программного обеспечения, и любые нарушения будут немедленно преследоваться по закону!
+import sys
+
 from fs_custom_light import CustomLight
 
 # @version: python3.7
@@ -318,6 +320,9 @@ go.motor_init()
 
 i = 0
 
+sys.setrecursionlimit(10000)
+
+
 while True:
     '''
     Главный цикл программы
@@ -330,9 +335,7 @@ while True:
                 cfg.PS2_LOOPS = 0
 
             #test(fs_motor)
-            if i == 0:
-                first_step(fs_motor)
-
+            first_step(fs_motor,i)
             i+=1
 
     except Exception as e:  # Ловить и печатать ошибку

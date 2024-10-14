@@ -59,19 +59,16 @@ class NodeUtil:
 
 
 
-class AStarPath():
-    def __init__(self, nodes: List[Node]):
-        self.nodes = nodes
-
+class AStarPath:
     def distance(self, from_point: Node, target_point: Node):
         return math.sqrt(math.pow((target_point.x - from_point.x), 2) + math.pow((target_point.y - from_point.y), 2))
 
-    def get_neighbors(self, node: Node, end_node: Node):
+    def get_neighbors(self, node: Node, end_node: Node,nodes: List[Node]):
         neighbors = []
 
         node_util = NodeUtil()
 
-        for local_node in self.nodes:
+        for local_node in nodes:
             if local_node == end_node:
                 local_node.f_cost = 0
 
@@ -128,7 +125,7 @@ class AStarPath():
 
     from queue import PriorityQueue
 
-    def a_star_simple(self, start_node: Node, end_node: Node) -> List[Node]:
+    def a_star_simple(self, start_node: Node, end_node: Node,nodes: List[Node]) -> List[Node]:
         queue = PriorityQueue()
         queue.put((0, start_node))
         start_node.g_cost = 0
@@ -150,7 +147,7 @@ class AStarPath():
 
             recent.append(current_node)
 
-            neighbors = self.get_neighbors(current_node, end_node)
+            neighbors = self.get_neighbors(current_node, end_node,nodes)
 
             for neighbor in neighbors:
                 if neighbor.is_block or neighbor in recent:
