@@ -334,7 +334,7 @@ while True:
 
             i+=1
 
-            Hand().test_move()
+            Hand().base_state()
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
