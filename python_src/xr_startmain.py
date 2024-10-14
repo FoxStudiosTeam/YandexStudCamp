@@ -13,8 +13,6 @@ from fs_custom_light import CustomLight
 # @File    : xr_startmain.py
 # @Software: PyCharm
 
-from builtins import bytes, int
-
 import os
 import time
 import threading
@@ -23,8 +21,7 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
-from fs_move_simple import Direction
-from fs_event import bus
+from fs_invoker import test
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -313,13 +310,6 @@ for t in threads:
 print("all theads start...>>>>>>>>>>>>")
 # Восстановить сохраненный угол сервопривода
 servo.store()
-
-
-def test():
-    bus.emit('move', Direction.FORWARD)
-    time.sleep(2)
-    bus.emit('stop')
-
 
 # Восстановить сохраненную скорость двигателя
 go.motor_init()
