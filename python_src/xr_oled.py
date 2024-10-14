@@ -32,46 +32,46 @@ import xr_config as cfg
 
 
 class Oled():
-    def __init__(self):
-        # Получаем экземпляр OLED
-        self.disp = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1)
-        # Инициализация, очистка экрана
-        self.disp.begin()
-        self.disp.clear()
-        self.disp.display()
+	def __init__(self):
+		# Получаем экземпляр OLED
+		self.disp = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1)
+		# Инициализация, очистка экрана
+		self.disp.begin()
+		self.disp.clear()
+		self.disp.display()
 
-        # Создаем новое изображение размером с размер OLED
-        self.width = self.disp.width
-        self.height = self.disp.height
-        self.image = Image.new('1', (self.width, self.height))
+		# Создаем новое изображение размером с размер OLED
+		self.width = self.disp.width
+		self.height = self.disp.height
+		self.image = Image.new('1', (self.width, self.height))
 
-        # Загружаем изображение в объект рисования, аналогично загрузке на холст
-        self.draw = ImageDraw.Draw(self.image)
+		# Загружаем изображение в объект рисования, аналогично загрузке на холст
+		self.draw = ImageDraw.Draw(self.image)
 
-        # Рисуем черную заливку, чтобы очистить изображение
-        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
+		# Рисуем черную заливку, чтобы очистить изображение
+		self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-        # Draw a black filled box to clear the image.
-        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
+		# Draw a black filled box to clear the image.
+		self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-        # Draw some shapes.
-        # Сначала определяем некоторые константы, чтобы упростить изменение формы фигур.
-        self.padding = -2
-        self.top = self.padding
-        self.bottom = self.height - self.padding
-        # Перемещаемся слева направо, отслеживая текущую позицию x для рисования фигур.
+		# Draw some shapes.
+		# Сначала определяем некоторые константы, чтобы упростить изменение формы фигур.
+		self.padding = -2
+		self.top = self.padding
+		self.bottom = self.height - self.padding
+		# Перемещаемся слева направо, отслеживая текущую позицию x для рисования фигур.
 
-        # Выбор шрифта
-        # Шрифты по умолчанию в библиотеке, находятся в ImageFont
-        self.font = ImageFont.load_default()
-        # Библиотека шрифтов на Raspberry Pi, позволяет задавать размер шрифта
-        self.font1 = ImageFont.truetype('/home/pi/work/python_src/simhei.ttf', 14)
-        pass
+		# Выбор шрифта
+		# Шрифты по умолчанию в библиотеке, находятся в ImageFont
+		self.font = ImageFont.load_default()
+		# Библиотека шрифтов на Raspberry Pi, позволяет задавать размер шрифта
+		self.font1 = ImageFont.truetype('/home/pi/work/python_src/simhei.ttf', 14)
+		pass
 
 	def cpu_temp(self):
 		'''
-           # Получение температуры процессора Raspberry Pi
-           '''
+		   # Получение температуры процессора Raspberry Pi
+		   '''
 		# Температура CPU хранится в этом файле, откройте файл
 		tempFile = open('/sys/class/thermal/thermal_zone0/temp')
 		# Прочитайте файл
@@ -84,15 +84,15 @@ class Oled():
 
 	def get_network_interface_state(self, interface):
 		'''
-           Получение состояния подключения сетевого интерфейса. Возвращает up, если подключено, иначе возвращает down.
-           '''
+		   Получение состояния подключения сетевого интерфейса. Возвращает up, если подключено, иначе возвращает down.
+		   '''
 		return subprocess.check_output('cat /sys/class/net/%s/operstate' % interface, shell=True).decode('ascii')[
 			   :-1]
 
 	def get_ip_address(self, interface):
 		'''
-           Получение IP-адреса сети
-           '''
+		   Получение IP-адреса сети
+		   '''
 		if self.get_network_interface_state(interface) == 'down':  # Проверка состояния подключения
 			return None
 		cmd = "ifconfig %s | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'" % interface  # Поиск IP-адреса для соответствующего сетевого интерфейса
@@ -100,8 +100,8 @@ class Oled():
 
 	def get_ip_address_wlan(self, interface):
 		'''
-           Получение IP-адреса сети
-           '''
+		   Получение IP-адреса сети
+		   '''
 		if self.get_network_interface_state(interface) == 'down':  # Проверка состояния подключения
 			return None
 		cmd = "ip a show dev %s | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | grep -v '169'" % interface  # Поиск IP-адреса для соответствующего сетевого интерфейса
@@ -109,8 +109,8 @@ class Oled():
 
 	def draw_row_column(self, row, column, strs):
 		'''
-        Строчное отображение, row представляет номер строки, column представляет номер столбца, strs представляет строку, которую нужно отобразить.
-        '''
+		Строчное отображение, row представляет номер строки, column представляет номер столбца, strs представляет строку, которую нужно отобразить.
+		'''
 		if row == 1:
 			self.draw.text((column, self.top), strs, font=self.font, fill=255)
 		elif row == 2:
@@ -122,8 +122,8 @@ class Oled():
 
 	def disp_default(self):
 		'''
-        Информация, отображаемая при запуске, включая ip-адрес проводной сети, ip-адрес беспроводной сети, использование памяти и использование SD-карты.
-        '''
+		Информация, отображаемая при запуске, включая ip-адрес проводной сети, ip-адрес беспроводной сети, использование памяти и использование SD-карты.
+		'''
 		# Рисуем черную заливку, чтобы очистить изображение.
 		self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
@@ -149,9 +149,9 @@ class Oled():
 
 	def disp_cruising_mode(self):
 		'''
-        Режим отображения после входа в режим управления
-        :return: none
-        '''
+		Режим отображения после входа в режим управления
+		:return: none
+		'''
 		self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
 		dispmod = cfg.OLED_DISP_MOD[cfg.CRUISING_FLAG]  # Отображение режима в соответствии с выбранным режимом
