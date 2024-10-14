@@ -27,6 +27,7 @@ import fs_event as fs_ev
 from fs_move_simple import Direction
 from fs_event import bus
 from fs_move_hand import Hand
+from fs_movement import FsMovement
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -320,7 +321,9 @@ servo.store()
 go.motor_init()
 # Основной цикл программы
 
-fs_ev.bus.emit('first_move', fs_motor)
+fs_movement = FsMovement()
+
+fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
 while True:
     '''
