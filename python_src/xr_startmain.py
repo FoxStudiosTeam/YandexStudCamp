@@ -24,6 +24,9 @@ from subprocess import call
 from fs_motor import FSMover
 import xr_config as cfg
 import fs_event as fs_ev
+from fs_move_simple import Direction
+from fs_event import bus
+from fs_move_hand import Hand
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -319,9 +322,6 @@ go.motor_init()
 
 i = 0
 
-sys.setrecursionlimit(10000)
-
-
 while True:
     '''
     Главный цикл программы
@@ -335,6 +335,8 @@ while True:
 
             fs_ev.bus.emit('first_move', fs_motor, i)
 
+
+            Hand().test_move()
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)

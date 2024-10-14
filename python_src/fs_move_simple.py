@@ -66,17 +66,12 @@ class AStarPath:
     def get_neighbors(self, node: Node, end_node: Node,nodes: List[Node]):
         neighbors = []
 
-        node_util = NodeUtil()
-
         for local_node in nodes:
             if local_node == end_node:
                 local_node.f_cost = 0
 
             local_node.h_cost = self.distance(local_node, end_node)
             local_node.f_cost = local_node.g_cost + local_node.h_cost
-
-            local_node.direction = node_util.validate_direction(node, local_node)
-
             if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and
                 ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node != node:
                 neighbors.append(local_node)
@@ -130,6 +125,7 @@ class AStarPath:
         queue.put((0, start_node))
         start_node.g_cost = 0
         recent = []
+        node_util = NodeUtil()
 
         while not queue.empty():
             current_node = queue.get()[1]
@@ -138,6 +134,8 @@ class AStarPath:
                 path = []
                 while current_node:
                     path.append(current_node)
+                    if current_node.parent:
+                        current_node.parent.direction = node_util.validate_direction(current_node.parent, current_node)
                     current_node = current_node.parent
                 path.reverse()
                 return path
