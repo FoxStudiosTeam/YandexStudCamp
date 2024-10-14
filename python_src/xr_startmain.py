@@ -320,7 +320,7 @@ servo.store()
 go.motor_init()
 # Основной цикл программы
 
-i = 0
+fs_ev.bus.emit('first_move', fs_motor)
 
 while True:
     '''
@@ -333,7 +333,6 @@ while True:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
 
-            fs_ev.bus.emit('first_move', fs_motor, i)
 
 
             Hand().test_move()

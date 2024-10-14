@@ -9,8 +9,7 @@ nodes = create_graph()
 path = a_star_path.a_star_simple(nodes[0], nodes[208], nodes)
 
 @fs_ev.bus.on('first_move')
-def first_step(fs_motor: FSMover, i: int):
-    if i < 1:
+def first_step(fs_motor: FSMover):
         for elem in path:
             fs_ev.bus.emit("move", fs_motor, elem.direction)
             time.sleep(1)
