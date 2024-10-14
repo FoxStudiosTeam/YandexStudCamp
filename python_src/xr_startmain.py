@@ -25,7 +25,7 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
-from python_src.fs_move_simple import Direction
+from fs_move_simple import Direction
 from xr_motor import RobotDirection
 
 go = RobotDirection()

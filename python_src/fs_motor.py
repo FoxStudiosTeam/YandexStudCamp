@@ -2,7 +2,7 @@ import time
 
 import xr_config as cfg
 from fs_move_simple import Direction
-from python_src.xr_startmain import bus
+from xr_startmain import bus
 from xr_motor import RobotDirection
 
 class FSMover(RobotDirection):
