@@ -1,6 +1,3 @@
-import time
-
-import xr_config as cfg
 from fs_move_simple import Direction
 from fs_event import bus
 

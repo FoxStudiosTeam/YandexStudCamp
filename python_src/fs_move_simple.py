@@ -1,6 +1,8 @@
 import math
 from enum import Enum
 from queue import PriorityQueue
+from typing import List
+
 
 class Direction(Enum):
     FORWARD = 1
@@ -58,7 +60,7 @@ class NodeUtil:
 
 
 class AStarPath():
-    def __init__(self, nodes: list[Node]):
+    def __init__(self, nodes: List[Node]):
         self.nodes = nodes
 
     def distance(self, from_point: Node, target_point: Node):
@@ -88,7 +90,7 @@ class AStarPath():
         return neighbors
 
 
-    # def a_star_simple(self, start_node: Node, end_node: Node, nodes: list[Node]) -> list[Node]:
+    # def a_star_simple(self, start_node: Node, end_node: Node, nodes: List[Node]) -> list[Node]:
     #     queue = PriorityQueue()
     #     queue.put((0, start_node))
     #     current_node = start_node
@@ -126,7 +128,7 @@ class AStarPath():
 
     from queue import PriorityQueue
 
-    def a_star_simple(self, start_node: Node, end_node: Node) -> list[Node]:
+    def a_star_simple(self, start_node: Node, end_node: Node) -> List[Node]:
         queue = PriorityQueue()
         queue.put((0, start_node))
         start_node.g_cost = 0
