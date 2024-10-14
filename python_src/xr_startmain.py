@@ -333,6 +333,8 @@ while True:
             if i == 0:
                 first_step(fs_motor)
 
+            i+=1
+
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)
