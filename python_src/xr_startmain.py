@@ -337,9 +337,6 @@ while True:
                 cfg.PS2_LOOPS = 0
 
 
-
-            fs_ev.bus.emit('first_move', fs_motor, i)
-
             Hand().base_state()
 
     except Exception as e:  # Ловить и печатать ошибку
