@@ -1,6 +1,8 @@
 import math
 from enum import Enum
 from queue import PriorityQueue
+from typing import List
+
 
 class Direction(Enum):
     FORWARD = 1
@@ -58,7 +60,7 @@ class NodeUtil:
 
 
 class AStarPath():
-    def __init__(self, nodes: list[Node]):
+    def __init__(self, nodes: List[Node]):
         self.nodes = nodes
 
     def distance(self, from_point: Node, target_point: Node):
@@ -67,16 +69,12 @@ class AStarPath():
     def get_neighbors(self, node: Node, end_node: Node):
         neighbors = []
 
-        node_util = NodeUtil()
-
         for local_node in self.nodes:
             if local_node == end_node:
                 local_node.f_cost = 0
 
             local_node.h_cost = self.distance(local_node, end_node)
             local_node.f_cost = local_node.g_cost + local_node.h_cost
-
-            local_node.direction = node_util.validate_direction(node, local_node)
 
             if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and
                 ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node != node:
@@ -88,7 +86,7 @@ class AStarPath():
         return neighbors
 
 
-    # def a_star_simple(self, start_node: Node, end_node: Node, nodes: list[Node]) -> list[Node]:
+    # def a_star_simple(self, start_node: Node, end_node: Node, nodes: List[Node]) -> list[Node]:
     #     queue = PriorityQueue()
     #     queue.put((0, start_node))
     #     current_node = start_node
@@ -126,11 +124,12 @@ class AStarPath():
 
     from queue import PriorityQueue
 
-    def a_star_simple(self, start_node: Node, end_node: Node) -> list[Node]:
+    def a_star_simple(self, start_node: Node, end_node: Node) -> List[Node]:
         queue = PriorityQueue()
         queue.put((0, start_node))
         start_node.g_cost = 0
         recent = []
+        node_util = NodeUtil()
 
         while not queue.empty():
             current_node = queue.get()[1]
@@ -139,6 +138,8 @@ class AStarPath():
                 path = []
                 while current_node:
                     path.append(current_node)
+                    if current_node.parent:
+                        current_node.parent.direction = node_util.validate_direction(current_node.parent, current_node)
                     current_node = current_node.parent
                 path.reverse()
                 return path

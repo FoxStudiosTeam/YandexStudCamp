@@ -4,8 +4,6 @@
 # Все права защищены: XiaoR Technology (глубоко интегрированная компания Shenzhen XiaoEr Geek Technology Co., Ltd.; www.xiao-r.com) и форум WIFI-роботов www.wifi-robots.com
 # Этот код может быть свободно изменен, но запрещено использовать его в коммерческих целях!
 # На этот код подана заявка на защиту авторских прав программного обеспечения, и любые нарушения будут немедленно преследоваться по закону!
-from event_bus import EventBus
-
 from fs_custom_light import CustomLight
 
 # @version: python3.7
@@ -14,8 +12,6 @@ from fs_custom_light import CustomLight
 # @Time    : 2020/05/09
 # @File    : xr_startmain.py
 # @Software: PyCharm
-
-from builtins import bytes, int
 
 import os
 import time
@@ -27,7 +23,7 @@ from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_simple import Direction
 from fs_event import bus
-from python_src.fs_move_hand import Hand
+from fs_move_hand import Hand
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -317,16 +313,11 @@ print("all theads start...>>>>>>>>>>>>")
 # Восстановить сохраненный угол сервопривода
 servo.store()
 
-
-def test():
-    bus.emit('move', Direction.FORWARD)
-    time.sleep(2)
-    bus.emit('stop')
-
-
 # Восстановить сохраненную скорость двигателя
 go.motor_init()
 # Основной цикл программы
+
+i = 0
 
 while True:
     '''
@@ -338,8 +329,13 @@ while True:
             if cfg.PS2_LOOPS > 20:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
+
+            #test(fs_motor)
+
+            i+=1
+
             Hand().test_move()
-            test()
+
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)

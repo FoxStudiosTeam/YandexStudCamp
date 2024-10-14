@@ -1,3 +1,2 @@
-from event_bus import EventBus
-
-bus = EventBus()
+import event_bus as eb
+bus = eb.EventBus()
