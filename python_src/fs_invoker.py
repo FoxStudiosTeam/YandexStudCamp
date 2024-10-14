@@ -1,10 +1,10 @@
 import time
 
-from fs_event import bus
+import fs_event as fs_ev
 from fs_move_simple import Direction
 
 
 def test():
-    bus.emit('move', Direction.FORWARD)
+    fs_ev.bus.emit('move', Direction.FORWARD)
     time.sleep(2)
-    bus.emit('stop')
+    fs_ev.bus.emit('stop')

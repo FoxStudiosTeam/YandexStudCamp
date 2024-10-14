@@ -1,15 +1,15 @@
 from fs_move_simple import Direction
-from fs_event import bus
+import fs_event as fs_ev
 
 from xr_motor import RobotDirection
 
 class FSMover(RobotDirection):
 
-    @bus.on('stop')
+    @fs_ev.bus.on('stop')
     def stop(self):
         self.stop()
 
-    @bus.on('move')
+    @fs_ev.bus.on('move')
     def move(self, direction: Direction):
         if direction == Direction.FORWARD:
             self.forward()
