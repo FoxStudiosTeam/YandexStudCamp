@@ -26,6 +26,7 @@ from subprocess import call
 from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_simple import Direction
+from fs_event import bus
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -69,7 +70,7 @@ from xr_voice import Voice
 
 voice = Voice()
 
-bus = EventBus()
+
 
 
 def cruising_mode():
