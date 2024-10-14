@@ -23,8 +23,7 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
-from fs_invoker import test
-from fs_movement import first_step
+import fs_event as fs_ev
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -334,9 +333,8 @@ while True:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
 
-            #test(fs_motor)
-            first_step(fs_motor,i)
-            i+=1
+            fs_ev.bus.emit('first_move', fs_motor, i)
+
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
