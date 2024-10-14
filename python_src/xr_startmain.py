@@ -4,8 +4,6 @@
 # Все права защищены: XiaoR Technology (глубоко интегрированная компания Shenzhen XiaoEr Geek Technology Co., Ltd.; www.xiao-r.com) и форум WIFI-роботов www.wifi-robots.com
 # Этот код может быть свободно изменен, но запрещено использовать его в коммерческих целях!
 # На этот код подана заявка на защиту авторских прав программного обеспечения, и любые нарушения будут немедленно преследоваться по закону!
-from event_bus import EventBus
-
 from fs_custom_light import CustomLight
 
 # @version: python3.7
