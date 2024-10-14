@@ -3,7 +3,7 @@ import time
 import fs_event as fs_ev
 
 from fs_move_simple import Direction
-from python_src.fs_motor import FSMover
+from fs_motor import FSMover
 
 
 def test(fs_motor: FSMover):
