@@ -4,6 +4,8 @@
 # Все права защищены: XiaoR Technology (глубоко интегрированная компания Shenzhen XiaoEr Geek Technology Co., Ltd.; www.xiao-r.com) и форум WIFI-роботов www.wifi-robots.com
 # Этот код может быть свободно изменен, но запрещено использовать его в коммерческих целях!
 # На этот код подана заявка на защиту авторских прав программного обеспечения, и любые нарушения будут немедленно преследоваться по закону!
+import sys
+
 from fs_custom_light import CustomLight
 
 # @version: python3.7
@@ -21,6 +23,7 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
+import fs_event as fs_ev
 from fs_move_simple import Direction
 from fs_event import bus
 from fs_move_hand import Hand
@@ -227,7 +230,7 @@ def status():
             # 		#car_light.close_light()
         if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
             cfg.LOOPS = 0  # Очистка LOOPS
-            power.show_vol()  # Показание индикатора заряда батареи
+            #power.show_vol()  # Показание индикатора заряда батареи
             try:
                 oled.disp_cruising_mode()  # отображение режима OLED
             except:
@@ -330,9 +333,8 @@ while True:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
 
-            #test(fs_motor)
+            fs_ev.bus.emit('first_move', fs_motor, i)
 
-            i+=1
 
             Hand().test_move()
 
