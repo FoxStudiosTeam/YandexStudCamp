@@ -316,6 +316,8 @@ servo.store()
 go.motor_init()
 # Основной цикл программы
 
+i = 0
+
 while True:
     '''
     Главный цикл программы
@@ -328,7 +330,8 @@ while True:
                 cfg.PS2_LOOPS = 0
 
             #test(fs_motor)
-            first_step(fs_motor)
+            if i == 0:
+                first_step(fs_motor)
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
