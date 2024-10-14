@@ -27,6 +27,7 @@ from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_simple import Direction
 from fs_event import bus
+from python_src.fs_move_hand import Hand
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -337,7 +338,7 @@ while True:
             if cfg.PS2_LOOPS > 20:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
-
+            Hand().test_move()
             test()
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
