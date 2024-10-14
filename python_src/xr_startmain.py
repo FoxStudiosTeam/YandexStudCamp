@@ -21,8 +21,9 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
-from fs_invoker import test
-from fs_movement import first_step
+from fs_move_simple import Direction
+from fs_event import bus
+from fs_move_hand import Hand
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -330,10 +331,10 @@ while True:
                 cfg.PS2_LOOPS = 0
 
             #test(fs_motor)
-            if i == 0:
-                first_step(fs_motor)
 
             i+=1
+
+            Hand().test_move()
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
