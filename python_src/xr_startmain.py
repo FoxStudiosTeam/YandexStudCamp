@@ -326,7 +326,7 @@ while True:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
 
-            test()
+            test(fs_motor)
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)
