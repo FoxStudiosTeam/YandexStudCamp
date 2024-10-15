@@ -2,15 +2,15 @@ from fs_move_simple import AStarPath, create_graph, Node, Direction
 from tkinter import *
 
 nodes = create_graph()
-a_star_path = AStarPath(nodes)
+a_star_path = AStarPath()
 
 # queue = a_star_path.a_star_simple(nodes[0], nodes[510],nodes)
-path = a_star_path.a_star_simple(nodes[0], nodes[208])
+path = a_star_path.a_star_simple(nodes[0], nodes[526],nodes)
 #path = a_star_path.a_star_simple(nodes[0], nodes[526])
 
 root = Tk()
 
-canvas = Canvas(root)
+canvas = Canvas(root, width=250, height=250)
 
 offset_x = 0
 offset_y = 0
