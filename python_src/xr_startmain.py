@@ -335,10 +335,6 @@ while True:
             if cfg.PS2_LOOPS > 20:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
-
-
-            Hand().base_state()
-
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)
