@@ -28,10 +28,29 @@ class Hand(Servo):
     #     print(i2c.readdata(i2c.mcu_address, 0x01))
     #     time.sleep(1)
     
-    def test_state(self):
-        self.set(1, 150)
-        self.set(2, 45)
-        self.set(3, 45)
-        self.set(4, 15)
-        self.set(5, 50)
-        self.set(6, 50)
+    def normal_state(self):
+        self.set(1,180)
+        self.set(2, 30)
+        self.set(3, 90)
+        self.set(4, 90)
+        self.set(7, 85)
+        self.set(8, 105)
+
+    def catch_cube(self):
+        # 28см от машинки до кубика
+        self.set(2, 180)
+        self.set(1, 75)
+        self.set(3, 90)
+        self.set(4, 45)
+        time.sleep(5)
+        self.set(4, 85)
+        self.set(1, 180)
+        self.set(2, 100)
+
+    def drop(self):
+        # корзинка должна быть в 10см
+        self.set(2, 100)
+        self.set(1, 170)
+        self.set(3, 90)
+        self.set(4, 45)
+        time.sleep(2)        

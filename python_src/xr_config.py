@@ -36,9 +36,9 @@ CRUISING_SET = {'normal': 0, 'irfollow': 1, 'trackline': 2, 'avoiddrop': 3, 'avo
 CAMERA_MOD_SET = {'camera_normal': 0, 'camera_linepatrol': 1, 'facefollow':2, 'colorfollow':3, 'qrcode_detection':4}
 
 # Максимальное значение угла сервопривода
-ANGLE_MAX = 160
+ANGLE_MAX = 180
 # Минимальное значение угла сервопривода
-ANGLE_MIN = 15
+ANGLE_MIN = 10
 
 # Режим голоса
 VOICE_MOD = 0

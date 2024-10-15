@@ -228,10 +228,10 @@ def status():
         if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
             cfg.LOOPS = 0  # Очистка LOOPS
             power.show_vol()  # Показание индикатора заряда батареи
-            try:
-                oled.disp_cruising_mode()  # отображение режима OLED
-            except:
-                print('failed to initialized OLED')
+            # try:
+            #     # oled.disp_cruising_mode()  # отображение режима OLED
+            # except:
+            #     print('failed to initialized OLED')
 
     loops = cfg.LOOPS  # Использование промежуточной переменной для увеличения значения
     loops = loops + 1
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     time.sleep(0.2)
     print("now bluetooth discoverable")
 
-    servo.restore()  # Возвращаем положение серводвигателя к исходному
+    # servo.restore()  # Возвращаем положение серводвигателя к исходному
     try:
         oled.disp_default()  # Отображаем начальную информацию на OLED
     except:
@@ -319,24 +319,24 @@ go.motor_init()
 
 i = 0
 
+Hand().normal_state()
+
 while True:
     '''
     Главный цикл программы
     '''
     try:
         if cfg.PROGRAM_ABLE:  # Если системный флаг программы включен
-            cfg.PS2_LOOPS = cfg.PS2_LOOPS + 1
-            if cfg.PS2_LOOPS > 20:
-                ps2.control()
-                cfg.PS2_LOOPS = 0
+            # cfg.PS2_LOOPS = cfg.PS2_LOOPS + 1
+            # if cfg.PS2_LOOPS > 20:
+            #     ps2.control()
+            #     cfg.PS2_LOOPS = 0
 
             #test(fs_motor)
 
             i+=1
 
-            fs_ev.bus.emit('first_move', fs_motor, i)
-
-            Hand().test_state()
+            # fs_ev.bus.emit('first_move', fs_motor, i)
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
