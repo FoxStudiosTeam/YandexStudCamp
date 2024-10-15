@@ -311,7 +311,7 @@ for t in threads:
 # print("theads %s start..." %t)
 print("all theads start...>>>>>>>>>>>>")
 # Восстановить сохраненный угол сервопривода
-servo.store()
+servo.restore()
 
 # Восстановить сохраненную скорость двигателя
 go.motor_init()
@@ -336,7 +336,7 @@ while True:
 
             fs_ev.bus.emit('first_move', fs_motor, i)
 
-            Hand().base_state()
+            Hand().test_state()
 
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
