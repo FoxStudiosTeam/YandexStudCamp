@@ -324,7 +324,6 @@ go.motor_init()
 fs_movement = FsMovement()
 
 fs_ev.bus.emit('first_move', fs_movement, fs_motor)
-i = 0
 
 Hand().normal_state()
 
@@ -338,11 +337,6 @@ while True:
             if cfg.PS2_LOOPS > 20:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
-                
-            i+=1
-
-            # fs_ev.bus.emit('first_move', fs_motor, i)
-
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)
