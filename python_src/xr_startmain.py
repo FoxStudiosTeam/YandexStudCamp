@@ -231,11 +231,11 @@ def status():
             # 		#car_light.close_light()
         if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
             cfg.LOOPS = 0  # Очистка LOOPS
-            #power.show_vol()  # Показание индикатора заряда батареи
-            try:
-                oled.disp_cruising_mode()  # отображение режима OLED
-            except:
-                print('failed to initialized OLED')
+            # power.show_vol()  # Показание индикатора заряда батареи
+            # try:
+            #     # oled.disp_cruising_mode()  # отображение режима OLED
+            # except:
+            #     print('failed to initialized OLED')
 
     loops = cfg.LOOPS  # Использование промежуточной переменной для увеличения значения
     loops = loops + 1
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     time.sleep(0.2)
     print("now bluetooth discoverable")
 
-    servo.restore()  # Возвращаем положение серводвигателя к исходному
+    # servo.restore()  # Возвращаем положение серводвигателя к исходному
     try:
         oled.disp_default()  # Отображаем начальную информацию на OLED
     except:
@@ -315,7 +315,7 @@ for t in threads:
 # print("theads %s start..." %t)
 print("all theads start...>>>>>>>>>>>>")
 # Восстановить сохраненный угол сервопривода
-servo.store()
+servo.restore()
 
 # Восстановить сохраненную скорость двигателя
 go.motor_init()
@@ -325,7 +325,7 @@ fs_movement = FsMovement()
 
 fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
-Hand().base_state()
+Hand().normal_state()
 
 while True:
     '''
