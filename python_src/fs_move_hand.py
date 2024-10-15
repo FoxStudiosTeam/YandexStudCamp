@@ -22,6 +22,7 @@ class Hand:
         j = 1
         for i in needSend:
             i2c.writedata(i2c.mcu_address, i)
-            print(f'Угол угла серво №{j} ({i[2]}) = ', i[3])
-            j = j+1
+            #print(f'Угол серво №{j} ({i[2]}) = ', i[3])
+            #j = j+1
+        print(i2c.readdata(i2c.mcu_address, 0x01))
         time.sleep(1)
