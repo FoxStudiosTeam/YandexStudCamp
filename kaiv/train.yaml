@@ -1,0 +1,6 @@
+path: ./
+train: circle_train
+val: circle_eval
+
+nc: 1
+names: ['circle']
