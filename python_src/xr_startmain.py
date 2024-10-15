@@ -325,6 +325,8 @@ fs_movement = FsMovement()
 
 fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
+Hand().base_state()
+
 while True:
     '''
     Главный цикл программы
