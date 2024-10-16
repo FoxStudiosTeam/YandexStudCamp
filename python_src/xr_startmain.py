@@ -21,6 +21,7 @@ import threading
 from threading import Timer
 from subprocess import call
 
+import fs_event as fs_ev
 from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_hand import Hand
@@ -332,7 +333,7 @@ fs_movement = FsMovement()
 
 Hand().normal_state()
 
-fs_ev.bus.emit('1set_test', fs_movement, fs_motor, 1)
+fs_ev.bus.emit('1sec_test', fs_movement, fs_motor)
 
 while True:
     '''
