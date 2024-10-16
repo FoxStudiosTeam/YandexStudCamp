@@ -7,11 +7,11 @@ import shutil
 
 # vec![(path, variants)]
 SRC_DIRS = [
-    ("../../datasets/spheres_boxes", 1),
-    ("../../datasets/cubes_boxes", 1),
+    ("../../datasets/spheres", 1),
+    ("../../datasets/cubes", 1),
 ]
 
-DST_DIR = "../../datasets/merged_circles_boxes"
+DST_DIR = "../../datasets/train_dataset"
 
 try: os.mkdir(DST_DIR)
 except FileExistsError: pass
@@ -20,11 +20,8 @@ except FileExistsError: pass
 def cp_with_variant_offset(src_file, dst_file, offset):
     data = []
     for line in open(src_file, 'r'):
-        try:
-            i, cx, cy, w, h = [float(x) for x in line.split()]
-            data.append(f"{int(i) + offset} {cx} {cy} {w} {h}")
-        except:
-            print(f"Labels must be boxes! File: {src_file} Please, delete it manually")
+        i, p = line.split(" ", 1)
+        data.append(f"{int(i) + offset} {p}")
     with open(dst_file, 'w') as f:
         f.writelines(data)
 
