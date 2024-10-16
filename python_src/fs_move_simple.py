@@ -1,7 +1,7 @@
 import math
 from enum import Enum
 from queue import PriorityQueue
-from typing import List
+from typing import List, Tuple
 
 
 class Direction(Enum):
@@ -17,10 +17,11 @@ class Direction(Enum):
 
 class Node:
     def __init__(self, parent : object, x : int, y : int, is_block : bool):
-        self.direction = None
+        self.direction_grad : int = 0
+        self.direction : Direction = None
         self.x = x
         self.y = y
-        self.parent = None
+        self.parent : Node = None
         self.is_block = is_block
         self.g_cost: float = 0
         self.h_cost: float = 0
@@ -45,17 +46,17 @@ class NodeUtil:
     FORWARD - вверх
     BACK - вниз
     '''
-    def validate_direction(self, cur_node : Node, next_node : Node) -> Direction:
+    def validate_direction(self, cur_node : Node, next_node : Node) -> Tuple[Direction, int]:
         dir_x = next_node.x - cur_node.x
         dir_y = next_node.y - cur_node.y
-        if dir_x == 0 and dir_y < 0: return Direction.FORWARD
-        if dir_x == 0 and dir_y > 0: return Direction.BACK
-        if dir_x < 0 and dir_y > 0: return Direction.BACK_LEFT
-        if dir_x > 0 and dir_y > 0: return Direction.BACK_RIGHT
-        if dir_x < 0 and dir_y < 0: return Direction.FORWARD_LEFT
-        if dir_x > 0 and dir_y < 0: return Direction.FORWARD_RIGHT
-        if dir_x < 0 and dir_y == 0: return Direction.LEFT
-        if dir_x > 0 and dir_y == 0: return Direction.RIGHT
+        if dir_x == 0 and dir_y < 0: return Direction.FORWARD, 0
+        if dir_x == 0 and dir_y > 0: return Direction.BACK , 180
+        if dir_x < 0 and dir_y > 0: return Direction.BACK_LEFT, 225
+        if dir_x > 0 and dir_y > 0: return Direction.BACK_RIGHT, 135
+        if dir_x < 0 and dir_y < 0: return Direction.FORWARD_LEFT, 315
+        if dir_x > 0 and dir_y < 0: return Direction.FORWARD_RIGHT, 45
+        if dir_x < 0 and dir_y == 0: return Direction.LEFT, 270
+        if dir_x > 0 and dir_y == 0: return Direction.RIGHT, 90
 
 
 
@@ -135,7 +136,7 @@ class AStarPath:
                 while current_node:
                     path.append(current_node)
                     if current_node.parent:
-                        current_node.parent.direction = node_util.validate_direction(current_node.parent, current_node)
+                        current_node.parent.direction, current_node.parent.direction_grad = node_util.validate_direction(current_node.parent, current_node)
                     current_node = current_node.parent
                 path.reverse()
                 return path
