@@ -30,6 +30,7 @@ class Hand(Servo):
     
     def normal_state(self):
         self.set(1,180)
+        time.sleep(0.5)
         self.set(2, 30)
         self.set(3, 90)
         self.set(4, 90)
@@ -39,18 +40,32 @@ class Hand(Servo):
     def catch_cube(self):
         # 28см от машинки до кубика
         self.set(2, 180)
+        time.sleep(0.2)
         self.set(1, 75)
         self.set(3, 90)
         self.set(4, 45)
-        time.sleep(5)
+        time.sleep(3)
         self.set(4, 85)
         self.set(1, 180)
-        self.set(2, 100)
+        self.set(2, 90)
+
+    def catch_sphere(self):
+        # 28см от машинки до кубика
+        self.set(2, 180)
+        time.sleep(0.2)
+        self.set(1, 75)
+        self.set(3, 90)
+        self.set(4, 45)
+        time.sleep(3)
+        self.set(4, 90)
+        self.set(1, 180)
+        self.set(2, 90)
 
     def drop(self):
         # корзинка должна быть в 10см
-        self.set(2, 100)
-        self.set(1, 170)
+        self.set(2, 140)
+        self.set(1, 130)
         self.set(3, 90)
+        time.sleep(0.5)
         self.set(4, 45)
-        time.sleep(2)        
+        time.sleep(1)        

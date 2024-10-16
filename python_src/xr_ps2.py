@@ -17,6 +17,9 @@
 import time
 import xr_config as cfg
 from xr_i2c import I2c
+from fs_move_hand import Hand
+
+hand = Hand()
 
 i2c = I2c()
 
@@ -50,13 +53,13 @@ class PS2(object):
 			elif read_key == 0xdf:
 				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_PAD_RIGHT']
 			elif read_key1 == 0xef:
-				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_BLUE']
-			elif read_key1 == 0xbf:
 				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_GREEN']
+			elif read_key1 == 0xbf:
+				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_BLUE']
 			elif read_key1 == 0xcf:
-				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_RED']
-			elif read_key1 == 0xdf:
 				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_PINK']
+			elif read_key1 == 0xdf:
+				cfg.PS2_READ_KEY = cfg.PS2_KEY['PSB_RED']
 		return cfg.PS2_READ_KEY
 
 	def control(self):
@@ -104,19 +107,12 @@ class PS2(object):
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_PINK']:  # Равно розовой кнопке
 				# print('PSB_BLUE')
-				if (cfg.ANGLE[6] - add) > 0:
-					cfg.ANGLE[6] = cfg.ANGLE[6] - add
-				else:
-					cfg.ANGLE[6] = 0
-				servo.set(7, cfg.ANGLE[6])
+				hand.catch_cube()
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_GREEN']:  # Равно зеленой кнопке
 				# print('PSB_GREEN')
-				if (cfg.ANGLE[7] - add) < 155:
-					cfg.ANGLE[7] = cfg.ANGLE[7] + add
-				else:
-					cfg.ANGLE[7] = 155
-				servo.set(8, cfg.ANGLE[7])
+				hand.drop()
+				hand.normal_state()
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_BLUE']:  # Равно синей кнопке
 				# print('PSB_PINK')
