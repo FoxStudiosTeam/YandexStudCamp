@@ -1,6 +1,6 @@
 import time
 
-from fs_move_simple import create_graph, AStarPath
+from fs_move_simple import create_graph, AStarPath, Direction
 import fs_event as fs_ev
 from fs_motor import FSMover
 
@@ -18,8 +18,8 @@ class FsMovement:
         fs_ev.bus.emit("stop", fs_motor)
 
     @fs_ev.bus.on('1sec_test')
-    def test_metering(self, fs_motor : FSMover, direction):
-        fs_ev.bus.emit('move',fs_motor, direction)
+    def test_metering(self, fs_motor : FSMover):
+        fs_ev.bus.emit("move",fs_motor, Direction.FORWARD)
         time.sleep(1)
-        fs_ev.bus.emit('stop', fs_motor)
+        fs_ev.bus.emit("stop", fs_motor)
 

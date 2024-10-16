@@ -158,7 +158,7 @@ class Oled():
 		dispmodlength = len(dispmod) * cfg.OLED_DISP_MOD_SIZE  # Получение длины строки
 		positionmod = (128 - dispmodlength) / 2 - 1  # Начальная позиция символов
 
-		self.draw.text((0, -2), cfg.LOGO, font=self.font, fill=255)  # Отображение логотипа
+		self.draw.text((0, -2), subprocess.check_output('iwgetid -r', shell=True), font=self.font, fill=255)  # Отображение логотипа (Теперь название сети)
 		for line in os.popen(
 				"ifconfig wlan0 | awk  '/ether/{print $2 ;exit}' |sed 's/\://g'"):  # Получение MAC-адреса wlan0
 			mac = (line[6:12])  # Получение последних 6 символов MAC-адреса

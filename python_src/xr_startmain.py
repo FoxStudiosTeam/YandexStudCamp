@@ -327,7 +327,7 @@ fs_movement = FsMovement()
 
 Hand().normal_state()
 
-fs_ev.bus.emit('1set_test', fs_movement, fs_motor, 1)
+fs_ev.bus.emit('1sec_test', fs_movement, fs_motor)
 
 while True:
     '''
