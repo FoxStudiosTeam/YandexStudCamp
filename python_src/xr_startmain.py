@@ -23,11 +23,9 @@ from subprocess import call
 
 from fs_motor import FSMover
 import xr_config as cfg
-import fs_event as fs_ev
-from fs_move_simple import Direction
-import fs_event as fs_ev
 from fs_move_hand import Hand
 from fs_movement import FsMovement
+from fs_neuro_thread import NeuroThread
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -273,6 +271,7 @@ fs_custom_light = CustomLight()
 time.sleep(0.1)
 fs_motor = FSMover()
 
+fs_neuro_thread = NeuroThread(fs_motor)
 
 # Список потоков
 threads = []
@@ -297,12 +296,18 @@ threads.append(t4)
 t5 = threading.Thread(target=fs_custom_light.run, args=())
 threads.append(t5)
 
+#Поток для работы с нейронной сетью
+t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
+threads.append(t_neural)
+
 # Создаем таймер
 ti = threading.Timer(0.1, status)
 ti.start()
 
 # Команда для запуска start_mjpg_streamer
-path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
+#path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
+
+path_sh = 'sh /home/pi/work/mjpg-streamer-master/mjpg-streamer-experimental/start.sh'
 call("%s" % path_sh, shell=True)
 time.sleep(1)
 
