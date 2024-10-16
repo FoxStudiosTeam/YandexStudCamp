@@ -1,10 +1,21 @@
+# utils/models.py
 import torch
-from models import DetectMultiBackend
+import torch.nn as nn
 
-class CustomYOLOv5:
-    def __init__(self, weights='path/to/weights.pt', device='cpu'):
-        self.model = DetectMultiBackend(weights, device=device)
+class YOLOv8(nn.Module):
+    def __init__(self):
+        super(YOLOv8, self).__init__()
+        self.model = torch.hub.load('ultralytics/yolov8', 'yolov8n')
 
-    def predict(self, img):
-        results = self.model(img)
-        return results
+    def forward(self, x):
+        return self.model(x)
+
+def load_yolov8_model():
+    """
+    Загрузка модели YOLOv8.
+
+    Returns:
+        YOLOv8: Модель YOLOv8.
+    """
+    model = YOLOv8()
+    return model
