@@ -21,6 +21,7 @@ import threading
 from threading import Timer
 from subprocess import call
 
+import fs_event as fs_ev
 from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_hand import Hand
