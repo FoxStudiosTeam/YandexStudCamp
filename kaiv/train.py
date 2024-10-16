@@ -7,7 +7,7 @@ import os
 
 model = YOLO("yolov8n.pt")
 model.train(
-    data='train.yaml', epochs=16, batch=24,
+    data='train.yaml', epochs=8, batch=24,
     #imgsz=960,
     #workers=0,
     hsv_h= 0.02,

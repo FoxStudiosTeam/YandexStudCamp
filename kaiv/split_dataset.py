@@ -2,8 +2,8 @@ import os
 import shutil
 import random
 
-src_dir = "dataset2"
-dest_dir = "evaluate"
+src_dir = "../datasets/merged_circles_boxes"
+dest_dir = "../datasets/eval_circles_boxes"
 percentage = 10
 
 if not os.path.exists(dest_dir):

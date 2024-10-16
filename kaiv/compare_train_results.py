@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
 
-PATH_ROOTS = "../runs"
+PATH_ROOTS = "runs"
 PATHS = [
-    "release",
-    "release_v2",
-    "release_v3",
+    "detect/train2",
+    #"release_v2",
+    #"release_v3",
 ]
 FILE = "results.csv"
 COLORS = [
@@ -20,7 +20,7 @@ def read_csv(file_path):
     data = []
     label = True
     for line in open(file_path, "r"):
-        epoch, box_loss, cls_loss, dfl_loss, prec, recall, map50, map50_95, vbox, vcls, vdfl, _, _, _ = line.split(",")
+        epoch, box_loss, cls_loss, dfl_loss, prec, recall, map50, map50_95, vbox, vcls, vdfl, _, _, _, _ = line.split(",")
         if label:
             labels = [
                 epoch.replace(" ", ""),

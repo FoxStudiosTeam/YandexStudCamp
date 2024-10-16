@@ -1,6 +1,6 @@
 path: ./
-train: circle_train
-val: circle_eval
+train: merged_circles_boxes
+val: eval_circles_boxes
 
-nc: 1
-names: ['circle']
+nc: 2
+names: ['circle', 'cube']
