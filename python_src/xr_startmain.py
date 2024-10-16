@@ -232,10 +232,10 @@ def status():
         if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
             cfg.LOOPS = 0  # Очистка LOOPS
             # power.show_vol()  # Показание индикатора заряда батареи
-            # try:
-            #     # oled.disp_cruising_mode()  # отображение режима OLED
-            # except:
-            #     print('failed to initialized OLED')
+            try:
+                oled.disp_cruising_mode()  # отображение режима OLED
+            except:
+                print('failed to initialized OLED')
 
     loops = cfg.LOOPS  # Использование промежуточной переменной для увеличения значения
     loops = loops + 1
@@ -323,7 +323,7 @@ go.motor_init()
 
 fs_movement = FsMovement()
 
-fs_ev.bus.emit('first_move', fs_movement, fs_motor)
+# fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
 Hand().normal_state()
 
