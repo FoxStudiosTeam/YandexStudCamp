@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from ultralytics import YOLO
 import os
 import random
 
@@ -13,9 +12,7 @@ TARGET_DIM = 800
 SRC_DIR = "../datasets/eval_circles_boxes"
 MODEL_SAVE = "./runs/detect/train2/weights/best.pt"
 
-model = YOLO(MODEL_SAVE)
 
-if __name__ != '__main__': exit()
 
 LABELS = [
     "circle", 
@@ -84,33 +81,36 @@ def draw_boxes(img, boxes):
         cv2.putText(img, LABELS[i], (sx, sy), TEXT_FACE, TEXT_SIZE, (0, 0, 0), TEXT_THICKNESS)
     return img
 
-try:
-    while True:
-        files = [f for f in os.listdir(SRC_DIR) if os.path.isfile(os.path.join(SRC_DIR, f)) and f.endswith("jpg")]
+if __name__ == "__main__":
+    from ultralytics import YOLO
+    model = YOLO(MODEL_SAVE)
+    try:
+        while True:
+            files = [f for f in os.listdir(SRC_DIR) if os.path.isfile(os.path.join(SRC_DIR, f)) and f.endswith("jpg")]
 
-        path = files[int(random.random() * (len(files) - 1))].replace(".jpg", "")
-        img_path = f'{SRC_DIR}/{path}.jpg'
-        label_path = f'{SRC_DIR}/{path}.txt'
+            path = files[int(random.random() * (len(files) - 1))].replace(".jpg", "")
+            img_path = f'{SRC_DIR}/{path}.jpg'
+            label_path = f'{SRC_DIR}/{path}.txt'
 
-        image = cv2.imread(img_path)
-        aspect = image.shape[1] / image.shape[0]
-        if aspect < 1:
-            IMAGE_SIZE = (int(TARGET_DIM * aspect), TARGET_DIM)
-        else:
-            IMAGE_SIZE = (TARGET_DIM, int(TARGET_DIM / aspect))
-        image = cv2.resize(image, IMAGE_SIZE)
+            image = cv2.imread(img_path)
+            aspect = image.shape[1] / image.shape[0]
+            if aspect < 1:
+                IMAGE_SIZE = (int(TARGET_DIM * aspect), TARGET_DIM)
+            else:
+                IMAGE_SIZE = (TARGET_DIM, int(TARGET_DIM / aspect))
+            image = cv2.resize(image, IMAGE_SIZE)
 
-        boxes = parse_label(label_path)
-        image = draw_boxes(image, boxes)
-        cv2.imshow("given", image)
+            boxes = parse_label(label_path)
+            image = draw_boxes(image, boxes)
+            cv2.imshow("given", image)
 
-        result = model(img_path)
-        predicted_image = result[0].orig_img
-        predicted_image = cv2.resize(predicted_image, IMAGE_SIZE)
-        predicted_boxes = parse_result(result[0])
-        predicted_image = draw_boxes(predicted_image, predicted_boxes)
-        cv2.imshow("nn_output", predicted_image)
+            result = model(img_path)
+            predicted_image = result[0].orig_img
+            predicted_image = cv2.resize(predicted_image, IMAGE_SIZE)
+            predicted_boxes = parse_result(result[0])
+            predicted_image = draw_boxes(predicted_image, predicted_boxes)
+            cv2.imshow("nn_output", predicted_image)
 
-        k = cv2.waitKey(0)
-except KeyboardInterrupt:
-    exit()
+            k = cv2.waitKey(0)
+    except KeyboardInterrupt:
+        exit()
