@@ -68,7 +68,8 @@ def evaluate():
         # Например, в 'data/labels/image_name.txt'
         label_path = os.path.join(LABELS_DIR, image_name.replace('.jpg', '.txt'))
         y_true = load_annotations(label_path)
-        y_pred = [pred[-1] for pred in predictions]  # Предсказанные классы all_y_true.extend(y_true)
+        y_pred = [pred[-1] for pred in predictions]  # Предсказанные классы
+        all_y_true.extend(y_true)
         all_y_pred.extend(y_pred)
 
         # Визуализация результатов
