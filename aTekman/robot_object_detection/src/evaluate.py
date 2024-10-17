@@ -7,17 +7,16 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-# Импортируйте вашу модель YOLO (например, из библиотеки ultralytics)
 from ultralytics import YOLO
 
 # Конфигурация
-MODEL_PATH = 'models/yolov8_model.pt'  # Путь к сохраненной модели
-TEST_IMAGES_DIR = 'data/split/test/'  # Папка с тестовыми изображениями
-LABELS_DIR = 'data/labels/'  # Папка с аннотациями
-RESULTS_DIR = 'results/metrics/'  # Папка для сохранения метрик
+MODEL_PATH = 'models/yolov8_model.pt'
+TEST_IMAGES_DIR = 'data/split/test/'
+LABELS_DIR = 'data/labels/'
+RESULTS_DIR = 'results/metrics/'
 
 
-# Функция для загрузки модели
+
 def load_model(model_path):
     model = YOLO(model_path)
     return model
@@ -66,10 +65,9 @@ def evaluate():
         # Получаем предсказания
         predictions = get_predictions(model, image)
 
-        # Здесь вы должны загрузить соответствующие аннотации для изображения # Предполагается, что аннотации хранятся в текстовом формате
         # Например, в 'data/labels/image_name.txt'
         label_path = os.path.join(LABELS_DIR, image_name.replace('.jpg', '.txt'))
-        y_true = load_annotations(label_path)  # Функция для загрузки аннотаций
+        y_true = load_annotations(label_path)
         y_pred = [pred[-1] for pred in predictions]  # Предсказанные классы all_y_true.extend(y_true)
         all_y_pred.extend(y_pred)
 
