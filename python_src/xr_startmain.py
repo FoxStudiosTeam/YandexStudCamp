@@ -313,9 +313,9 @@ ti = threading.Timer(0.1, status)
 ti.start()
 
 # Команда для запуска start_mjpg_streamer
-#path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
+path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
 
-path_sh = 'sh /home/pi/work/mjpg-streamer/mjpg-streamer-experimental/start.sh'
+#path_sh = 'sh /home/pi/work/mjpg-streamer/mjpg-streamer-experimental/start.sh'
 call("%s" % path_sh, shell=True)
 time.sleep(1)
 
