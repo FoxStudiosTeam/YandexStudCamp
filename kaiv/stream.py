@@ -33,7 +33,7 @@ IMAGE_SIZE = (1, 1)
 
 app = Flask(__name__)
 
-MODEL = YOLO("./runs/detect/train2/weights/best.pt")
+MODEL = YOLO("./best.pt")
 
 def predict(frame):
     return MODEL.predict(frame)[0]
@@ -43,10 +43,9 @@ def index():
     return render_template('index.html')
 
 def generate_frames():
-    cap = cv2.VideoCapture(3)
+    cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
-        cv2.imwrite("C:/prog/YandexStudCamp/kaiv/test/img2.png", frame)
         if not ret:
             break
         result = predict(frame)
