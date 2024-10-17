@@ -304,9 +304,9 @@ threads.append(t_neural)
 
 
 
-t_camera_streamer = threading.Thread(target=fs_camera_streamer.run)
+t_camera_streamer = threading.Thread(target=fs_camera_streamer.camera_streamer_app.run, args=["port=8080"])
 threads.append(t_camera_streamer)
-t_stream_edited = threading.Thread(target=fs_stream_edited.run)
+t_stream_edited = threading.Thread(target=fs_stream_edited.fs_stream_edited_app.run)
 threads.append(t_stream_edited)
 # Создаем таймер
 ti = threading.Timer(0.1, status)

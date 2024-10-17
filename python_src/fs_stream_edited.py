@@ -29,7 +29,7 @@ COLORS = [
 
 IMAGE_SIZE = (1, 1)
 
-app = Flask(__name__)
+fs_stream_edited_app = Flask(__name__)
 
 MODEL = YOLO("./best.pt")
 
@@ -38,7 +38,7 @@ def predict(frame):
     return MODEL.predict(frame)[0]
 
 
-@app.route('/')
+@fs_stream_edited_app.route('/')
 def index():
     return render_template('index.html')
 
@@ -61,10 +61,6 @@ def generate_frames():
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@app.route('/video_feed')
+@fs_stream_edited_app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-def run():
-    app.run(debug=True)
