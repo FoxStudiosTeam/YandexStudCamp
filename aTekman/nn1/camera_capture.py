@@ -1,5 +1,4 @@
 import cv2
-from aTekman.yolov8 import YOLOv8
 
 
 class CameraCapture:
