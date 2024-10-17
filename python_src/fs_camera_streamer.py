@@ -4,7 +4,7 @@ import cv2
 camera_streamer_app = Flask(__name__)
 
 def generate_frames():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('http://127.0.0.1:8080/?action=stream')
     while True:
         ret, frame = cap.read()
         if not ret:
