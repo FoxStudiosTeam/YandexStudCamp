@@ -151,7 +151,7 @@ BT_SERVER.listen(1)
 
 # Параметры сервера TCP
 TCP_SERVER = socket(AF_INET, SOCK_STREAM)
-TCP_SERVER.bind(('', 2001))  # Связывание порта 2001 для WiFi
+TCP_SERVER.bind(('192.168.2.121', 25565))  # Связывание порта 2001 для WiFi
 TCP_SERVER.listen(1)
 
 # Определение кнопок джойстика PS2
