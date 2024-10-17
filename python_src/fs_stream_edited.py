@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 import cv2
 from ultralytics import YOLO
 import time
+import threading
 
 # local file
 from difference import draw_boxes, parse_result
@@ -31,9 +32,8 @@ IMAGE_SIZE = (1, 1)
 
 fs_stream_edited_app = Flask(__name__)
 
-MODEL = YOLO("/home/pi/work/python_src/best.pt")
-
-
+# MODEL = YOLO("/home/pi/work/python_src/best.pt")
+MODEL = YOLO("C:/Users/Hauptsturmfuhrer/Desktop/project/YandexStudCamp/python_src/best(3).pt")
 def predict(frame):
     return MODEL.predict(frame)[0]
 
@@ -44,7 +44,7 @@ def index():
 
 
 def generate_frames():
-    cap = cv2.VideoCapture('http://127.0.0.1:8080/?action=stream')
+    cap = cv2.VideoCapture(1)
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -56,7 +56,7 @@ def generate_frames():
         image = draw_boxes(frame, boxes)
         ret, buffer = cv2.imencode('.jpg', image)
         frame = buffer.tobytes()
-        time.sleep(1)
+        # time.sleep(1)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
@@ -64,3 +64,5 @@ def generate_frames():
 @fs_stream_edited_app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+threading.Thread(target=fs_stream_edited_app.run, args=('0.0.0.0','8080')).start()
