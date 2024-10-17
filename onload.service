@@ -2,8 +2,7 @@
 Description=FS-loader service
 
 [Service]
-ExecStart=/home/pi/work/python_src/env/bin/python /home/pi/work/python_src/xr_startmain.py
-ExecStart=node /home/pi/work/XiaoRGeek/main.js
+ExecStart=/home/pi/work/python_src/env/bin/python /home/pi/work/python_src/xr_startmain.py & sh /home/pi/work/mjpg-streamer-master/mjpg-streamer-experimental/start.sh & node /home/pi/work/XiaoRGeek/main.js
 Type=oneshot
 RemainAfterExit=yes
 
