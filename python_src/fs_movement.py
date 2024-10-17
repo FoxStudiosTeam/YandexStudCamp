@@ -17,9 +17,9 @@ class FsMovement:
             time.sleep(1)
         fs_ev.bus.emit("stop", fs_motor)
 
-    @fs_ev.bus.on('1sec_test')
-    def test_metering(self, fs_motor : FSMover):
-        fs_ev.bus.emit("move",fs_motor, Direction.FORWARD)
+    @fs_ev.bus.on('metering_test')
+    def test_metering(self, fs_motor : FSMover, direction : Direction = Direction.FORWARD):
+        fs_ev.bus.emit("move",fs_motor, direction)
         time.sleep(1)
         fs_ev.bus.emit("stop", fs_motor)
 

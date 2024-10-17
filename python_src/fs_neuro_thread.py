@@ -2,7 +2,7 @@ import time
 
 import fs_event as fs_ev
 from fs_top_camera_utils import TopCameraUtils
-from python_src.fs_motor import FSMover
+from fs_motor import FSMover
 
 class NeuroThread:
     def __init__(self, mover: FSMover):
