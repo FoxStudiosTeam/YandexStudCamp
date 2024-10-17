@@ -1,6 +1,10 @@
-path: C:\\Users\\tekma\\PycharmProjects\\YandexStudCamp\\datasets
-train: train_dataset
-val: eval_dataset
+path: /Users/agniaendie/IdeaProjects/YandexStudCamp/kaiv/datasets
+  #C:\\Users\\tekma\\PycharmProjects\\YandexStudCamp\\datasets
+train: merged_circles_boxes
+  #train_dataset
+val: eval_circles_boxes
+  #eval_dataset
 
 nc: 2
-names: ['circle', 'cube']
+#circle
+names: ['sphere', 'cube']
