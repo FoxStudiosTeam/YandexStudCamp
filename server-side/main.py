@@ -20,7 +20,7 @@ def client_thread(socket:socket,address:str) -> Thread:
 # create an INET, STREAMing socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # bind the socket to a public host, and a well-known port
-server_socket.bind(("127.0.0.1", 25565))
+server_socket.bind(("0.0.0.0", 2002))
 # become a server socket
 server_socket.listen(1)
 
