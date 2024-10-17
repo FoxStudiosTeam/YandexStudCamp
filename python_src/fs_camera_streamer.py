@@ -18,5 +18,5 @@ def generate_frames():
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == '__main__':
+def run():
     app.run(debug=True, port=8080)

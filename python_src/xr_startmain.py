@@ -27,6 +27,7 @@ import xr_config as cfg
 from fs_move_hand import Hand
 from fs_movement import FsMovement
 from fs_neuro_thread import NeuroThread
+import fs_camera_streamer, fs_stream_edited
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -301,6 +302,12 @@ threads.append(t5)
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)
 
+
+
+t_camera_streamer = threading.Thread(target=fs_camera_streamer.run)
+threads.append(t_camera_streamer)
+t_stream_edited = threading.Thread(target=fs_stream_edited.run)
+threads.append(t_stream_edited)
 # Создаем таймер
 ti = threading.Timer(0.1, status)
 ti.start()
