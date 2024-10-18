@@ -1,20 +1,21 @@
 import socket
 from idlelib.iomenu import encoding
 from threading import Thread
+from typing import Tuple
 
 import cv2
 
 
-def test_fun(socket,address:str):
-    pass
-    # cum = cv2.VideoCapture(address)
-    # while cum.isOpened():
-    #     ret, frame = cum.read()
-    #     if not ret:
-    #         cv2.imshow("pivo",frame)
+def test_fun(socket,address:Tuple[str,int]):
+    cum = cv2.VideoCapture(address[0]+":8080?action=stream")
+    while cum.isOpened():
+        ret, frame = cum.read()
+        if not ret:
+            cv2.imshow("pivo",frame)
+            socket.send(bytes("stop", encoding="utf-8"))
+            #socket.send(bytes("stop", encoding="utf-8"))
 
-
-def client_thread(socket:socket,address:str) -> Thread:
+def client_thread(socket:socket,address:Tuple[str,int]) -> Thread:
     #print(socket.client)
     print(socket)
     print(address)
