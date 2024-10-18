@@ -1,6 +1,4 @@
 import socket
-from idlelib.iomenu import encoding
-
 import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
