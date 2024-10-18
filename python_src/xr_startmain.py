@@ -26,7 +26,6 @@ from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_hand import Hand
 from fs_movement import FsMovement
-import fs_camera_streamer, fs_stream_edited
 from fs_socket import FSocket
 from xr_motor import RobotDirection
 
