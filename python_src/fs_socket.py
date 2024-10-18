@@ -2,8 +2,6 @@ import socket
 import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
-from xr_startmain import fs_motor
-
 
 class FSocket:
     def __init__(self,fs_motor : FSMover):
@@ -36,6 +34,6 @@ class FSocket:
 
     def resolve_command(self, command_string: str):
         if command_string == "stop":
-            fs_ev.bus.emit("stop",fs_motor)
+            fs_ev.bus.emit("stop",self.fs_motor)
         if command_string == "move-forward":
-            fs_ev.bus.emit("move",fs_motor, Direction.FORWARD)
+            fs_ev.bus.emit("move",self.fs_motor, Direction.FORWARD)
