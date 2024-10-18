@@ -31,15 +31,9 @@ from fs_socket import FSocket
 from xr_motor import RobotDirection
 
 go = RobotDirection()
-from xr_socket import Socket
-
-socket = Socket()
 from xr_infrared import Infrared
 
 infrared = Infrared()
-from xr_ultrasonic import Ultrasonic
-
-ultrasonic = Ultrasonic()
 from xr_camera import Camera
 
 camera = Camera()
@@ -102,25 +96,6 @@ def cruising_mode():
         # print("Infrared.avoiddrop")
         infrared.avoiddrop()
         time.sleep(0.05)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'avoidbyragar']:  # Переход в режим предотвращения столкновений с помощью ультразвукового датчика
-        # print("Ultrasonic.avoidbyragar")
-        ultrasonic.avoidbyragar()
-        time.sleep(0.5)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'send_distance']:  # Переход в режим измерения расстояния с помощью ультразвукового датчика
-        # print("Ultrasonic.send_distance")
-        ultrasonic.send_distance()
-        time.sleep(1)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'maze']:  # Переход в режим прохождения лабиринта с помощью ультразвукового датчика
-        # print("Ultrasonic.maze")
-        ultrasonic.maze()
-        time.sleep(0.05)
-
     elif cfg.CRUISING_FLAG == cfg.CRUISING_SET['camera_normal']:  # Переход в режим отладки
         time.sleep(2)
         print("CRUISING_FLAG == 7")
@@ -283,8 +258,8 @@ t1 = threading.Thread(target=camera.run, args=())
 threads.append(t1)
 
 # Создание нового Bluetooth-потока
-t2 = threading.Thread(target=socket.bluetooth_server, args=())
-threads.append(t2)
+# t2 = threading.Thread(target=socket.bluetooth_server, args=())
+# threads.append(t2)
 
 # Создание нового TCP-потока через WiFi
 #t3 = threading.Thread(target=socket.tcp_server, args=())
