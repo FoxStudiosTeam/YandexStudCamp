@@ -13,7 +13,7 @@ class FsMovement:
         nodes = create_graph()
         path = a_star_path.a_star_simple(nodes[0], nodes[208], nodes)
         for elem in path:
-            fs_ev.bus.emit("move", fs_motor, elem.direction)
+            fs_ev.bus.emit("move", fs_motor, elem.direction, elem.direction)
             time.sleep(1)
         fs_ev.bus.emit("stop", fs_motor)
 
@@ -23,3 +23,7 @@ class FsMovement:
         time.sleep(sec)
         fs_ev.bus.emit("stop", fs_motor)
 
+def test(sec:float = 1, direction : Direction = Direction.FORWARD):
+    fs_motor = FSMover()
+    fs_movement = FsMovement()
+    fs_ev.bus.emit('metering_test', fs_movement, fs_motor, sec, direction)

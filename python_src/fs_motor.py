@@ -11,25 +11,26 @@ class FSMover(RobotDirection):
         super().stop()
 
     @fs_ev.bus.on('move')
-    def move(self, direction: Direction):
-        if direction == Direction.FORWARD:
+    def move(self, cur_direction : Direction, next_direction : Direction):
+        diff = next_direction.value - cur_direction.value
+        if diff != 0:
+            super().stop()
+            if diff < 0:
+                super().left()
+                time.sleep(abs(diff//45))
+                super().stop()
+                cur_direction = next_direction
+            elif diff > 0:
+                super().right()
+                time.sleep(diff//45)
+                super().stop()
+                cur_direction = next_direction
+        if cur_direction == next_direction:
             super().forward()
-        if direction == Direction.FORWARD_LEFT:
-            super().stop()
-        if direction == Direction.FORWARD_RIGHT:
-            super().stop()
-        if direction == Direction.RIGHT:
-            super().right()
-            time.sleep(1)
-            super().forward()
-        if direction == Direction.LEFT:
-            super().left()
-            time.sleep(1)
-            super().forward()
-        if direction == Direction.BACK:
-            super().back()
-        if direction == Direction.BACK_LEFT:
-            super().stop()
-        if direction == Direction.BACK_RIGHT:
-            super().stop()
-
+            if cur_direction in [45, 135, 225, 315]:
+                time.sleep(1.76)
+            elif cur_direction in [0, 90, 180, 270]: time.sleep(1.25)
+    @fs_ev.bus.on('go-back')
+    def go_back(self, sec):
+        super().back()
+        time.sleep(sec)

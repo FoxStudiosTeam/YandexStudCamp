@@ -5,14 +5,14 @@ from typing import List, Tuple
 
 
 class Direction(Enum):
-    FORWARD = 1
-    FORWARD_LEFT = 2
-    FORWARD_RIGHT = 3
-    LEFT = 4
-    RIGHT = 5
-    BACK = 6
-    BACK_LEFT = 7
-    BACK_RIGHT = 8
+    FORWARD = 0
+    FORWARD_LEFT = 45
+    FORWARD_RIGHT = 315
+    LEFT = 270
+    RIGHT = 90
+    BACK = 180
+    BACK_LEFT = 225
+    BACK_RIGHT = 135
 
 
 class Node:
