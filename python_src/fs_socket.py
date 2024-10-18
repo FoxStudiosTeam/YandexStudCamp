@@ -36,4 +36,4 @@ class FSocket:
         if command_string == "stop":
             fs_ev.bus.emit("stop",self.fs_motor)
         if command_string == "move-forward":
-            fs_ev.bus.emit("move",self.fs_motor, Direction.FORWARD)
+            fs_ev.bus.emit("move",self.fs_motor, Direction.RIGHT)

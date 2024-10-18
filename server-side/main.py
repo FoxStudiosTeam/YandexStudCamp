@@ -19,19 +19,21 @@ def send(message:str,socket:socket):
     socket.send(bytes(message, encoding="utf-8"))
 
 def test_fun(socket:socket,address:Tuple[str,int]) -> None:
-    cum = cv2.VideoCapture(address[0]+":8080?action=stream")
-    while cum.isOpened():
+    # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
+    cum = cv2.VideoCapture(f"http://192.168.2.81:8080/?action=stream")
+    success, frame = cum.read()
+    while success:
         ret, frame = cum.read()
         if not ret:
             cv2.imshow("pivo",frame)
 
 
             #NN
-            command = "stop" #result of get->nn->result (multiple instances)
+            command = "move-forward" #result of get->nn->result (multiple instances)
             socket.send(bytes(command, encoding="utf-8"))
             raw_data = socket.recv(1024)
             data = bytes(raw_data).decode('utf-8')
-            resolve_message(data)
+            resolve_message(data,command,socket)
 
 
             #socket.send(bytes("stop", encoding="utf-8"))
@@ -43,7 +45,7 @@ def client_thread(socket:socket,address:Tuple[str,int]) -> Thread:
     #print(socket.client)
     print(socket)
     print(address)
-    return Thread(test_fun(socket,address))
+    return Thread(test_fun(socket,socket))
 
 
 # create an INET, STREAMing socket
