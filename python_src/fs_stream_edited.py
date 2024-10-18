@@ -45,28 +45,25 @@ def index():
 
 
 def generate_frames():
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture("http://192.168.2.81:8080?action=stream")
     while True:
         ret, frame = cap.read()
         if not ret:
             break
         result = predict(frame)
-        classes_names = result.names
-        classes = result.boxes.cls.cpu().numpy()
-        boxes= result.boxes.xyxy.cpu().numpy().astype(np.int32)
+        classes_names,classes,boxes = parse_result(result)
         if len(boxes) == 0:
             cv2.putText(frame, str("NO OBJECTS FOUND"), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         else:
-            for class_id, box, conf in zip(classes, boxes,result.boxes.conf):
-                if conf>0.5:
-                    class_name = classes_names[int(class_id)]
-                    color = COLORS[int(class_id) % len(COLORS)]
-                    x1, y1, x2, y2 = box
-                    cv2.rectangle(frame, (x1,y1), (x2,y2), color, 2)
-                    cv2.putText(frame, class_name, (x1,y1-10),cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            # boxes = parse_result(result)
-        # image = draw_boxes(frame, boxes)
-        ret, buffer = cv2.imencode('.jpg', frame)
+            # for class_id, box, conf in zip(classes, boxes,result.boxes.conf):
+            #     if conf>0.5:
+            #         class_name = classes_names[int(class_id)]
+            #         color = COLORS[int(class_id) % len(COLORS)]
+            #         x1, y1, x2, y2 = box
+            #         cv2.rectangle(frame, (x1,y1), (x2,y2), color, 2)
+            #         cv2.putText(frame, class_name, (x1,y1-10),cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            image = draw_boxes(frame, result, classes_names, classes, boxes)
+        ret, buffer = cv2.imencode('.jpg', image)
         frame = buffer.tobytes()
         # time.sleep(1)
         yield (b'--frame\r\n'
