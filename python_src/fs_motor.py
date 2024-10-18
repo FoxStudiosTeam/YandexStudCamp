@@ -15,7 +15,7 @@ class FSMover(RobotDirection):
     @fs_ev.bus.on('move')
     def move(self, next_direction : Direction):
         if self.cur_direction == None:
-            self.cur_direction = Direction.BACK
+            self.cur_direction = Direction.FORWARD
         diff = next_direction.value - self.cur_direction.value
         if diff != 0:
             super().stop()
