@@ -23,7 +23,7 @@ class FSocket:
         self.client_socket.connect(self.addr)
 
     def run(self):
-        connect()
+        self.connect()
         while True:
             try:
                 command = self.client_socket.recv(1024)
