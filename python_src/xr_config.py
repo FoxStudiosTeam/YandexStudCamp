@@ -149,11 +149,6 @@ BT_SERVER = socket(AF_INET, SOCK_STREAM)
 BT_SERVER.bind(('', 2002))  # Связывание порта 2002 для Bluetooth
 BT_SERVER.listen(1)
 
-# Параметры сервера TCP
-TCP_SERVER = socket(AF_INET, SOCK_STREAM)
-TCP_SERVER.bind(('192.168.2.148', 2002))  # Связывание порта 2001 для WiFi
-TCP_SERVER.listen(1)
-
 # Определение кнопок джойстика PS2
 PS2_ABLE = False  # Флаг подключения джойстика PS2
 PS2_READ_KEY = 0  # Читаемое значение клавиш PS2
