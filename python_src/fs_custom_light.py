@@ -19,16 +19,16 @@ class CustomLight(Car_light):
         j = 7
 
         while True:
+            self.set_ledgroup(1,8,COLOR['red'])
+            # self.set_led(num=j, color='black')
+            # self.set_led(num=i, color='orange')
 
-            self.set_led(num=i, color='white')
-            self.set_led(num=j, color='orange')
+            # i += 1
 
-            i += 1
-            j -= 1
+            # if i > 7 or i < 0:
+            #     i = 0
+            #     j = 7
 
-            if i > 7 or i < 0:
-                i = 0
-
-            if j < 0 or j > 7:
-                j = 7
+            # if i < 8 and i > 0:
+            #     j = i-1
             time.sleep(0.01)

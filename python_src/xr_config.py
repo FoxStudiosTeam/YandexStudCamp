@@ -49,9 +49,9 @@ VOICE_MOD_SET = {'normal': 0, 'openlight': 1, 'closelight': 2, 'forward': 3, 'ba
 # Флаг обнаружения пути
 PATH_DECT_FLAG = 0
 # Скорость слева
-LEFT_SPEED = 80
+LEFT_SPEED = 68
 # Скорость справа
-RIGHT_SPEED = 80
+RIGHT_SPEED = 70
 # Предыдущая скорость слева
 LASRT_LEFT_SPEED = 100
 # Предыдущая скорость справа
@@ -148,11 +148,6 @@ RECV_LEN = 5
 BT_SERVER = socket(AF_INET, SOCK_STREAM)
 BT_SERVER.bind(('', 2002))  # Связывание порта 2002 для Bluetooth
 BT_SERVER.listen(1)
-
-# Параметры сервера TCP
-TCP_SERVER = socket(AF_INET, SOCK_STREAM)
-TCP_SERVER.bind(('192.168.2.148', 2002))  # Связывание порта 2001 для WiFi
-TCP_SERVER.listen(1)
 
 # Определение кнопок джойстика PS2
 PS2_ABLE = False  # Флаг подключения джойстика PS2

@@ -6,8 +6,8 @@ from typing import List, Tuple
 
 class Direction(Enum):
     FORWARD = 0
-    FORWARD_LEFT = 45
-    FORWARD_RIGHT = 315
+    FORWARD_LEFT = 315
+    FORWARD_RIGHT = 45
     LEFT = 270
     RIGHT = 90
     BACK = 180
