@@ -42,7 +42,7 @@ def client_thread(socket: socket, address: Tuple[str, int]) -> Thread:
     # print(socket.client)
     print(socket)
     print(address)
-    return Thread(test_fun(socket, socket))
+    return Thread(target=test_fun, args=(socket, address))
 
 
 # create an INET, STREAMing socket
