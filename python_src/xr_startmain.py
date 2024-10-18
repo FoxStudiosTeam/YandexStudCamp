@@ -26,8 +26,8 @@ from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_hand import Hand
 from fs_movement import FsMovement
-from fs_neuro_thread import NeuroThread
 import fs_camera_streamer, fs_stream_edited
+from fs_socket import FSocket
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -273,7 +273,7 @@ fs_custom_light = CustomLight()
 time.sleep(0.1)
 fs_motor = FSMover()
 
-fs_neuro_thread = NeuroThread(fs_motor)
+#fs_neuro_thread = NeuroThread(fs_motor)
 
 # Список потоков
 threads = []
@@ -287,8 +287,10 @@ t2 = threading.Thread(target=socket.bluetooth_server, args=())
 threads.append(t2)
 
 # Создание нового TCP-потока через WiFi
-t3 = threading.Thread(target=socket.tcp_server, args=())
-threads.append(t3)
+#t3 = threading.Thread(target=socket.tcp_server, args=())
+#threads.append(t3)
+
+
 
 # Поток для голосового модуля
 t4 = threading.Thread(target=voice.run, args=())
@@ -299,6 +301,8 @@ t5 = threading.Thread(target=fs_custom_light.run, args=())
 threads.append(t5)
 
 #Поток для работы с нейронной сетью
+fs_neuro_thread = FSocket(fs_motor)
+
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)
 
