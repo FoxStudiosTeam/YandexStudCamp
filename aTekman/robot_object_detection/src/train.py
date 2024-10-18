@@ -1,11 +1,10 @@
 import os
 from ultralytics import YOLO
-
+from config import EPOCHS, BATCH_SIZE
 # Конфигурация
-DATASET_PATH = 'data/dataset.yaml'
-MODEL_PATH = 'models/yolov8_model.pt'
-EPOCHS = 50
-BATCH_SIZE = 16
+DATASET_PATH = 'data/split/test'
+MODEL_PATH = 'models/yolov8n_model.pt'
+
 
 def train_model():
 
