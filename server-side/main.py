@@ -1,19 +1,43 @@
 import socket
-from idlelib.iomenu import encoding
 from threading import Thread
 from typing import Tuple
+from event_bus import EventBus
 
 import cv2
 
 
-def test_fun(socket,address:Tuple[str,int]):
+bus = EventBus()
+
+def resolve_message(message:str,command:str,socket:socket):
+    if message == "error":
+        send(command,socket)
+    if message == "ok":
+        pass
+
+
+def send(message:str,socket:socket):
+    socket.send(bytes(message, encoding="utf-8"))
+
+def test_fun(socket:socket,address:Tuple[str,int]) -> None:
     cum = cv2.VideoCapture(address[0]+":8080?action=stream")
     while cum.isOpened():
         ret, frame = cum.read()
         if not ret:
             cv2.imshow("pivo",frame)
-            socket.send(bytes("stop", encoding="utf-8"))
+
+
+            #NN
+            command = "stop" #result of get->nn->result (multiple instances)
+            socket.send(bytes(command, encoding="utf-8"))
+            raw_data = socket.recv(1024)
+            data = bytes(raw_data).decode('utf-8')
+            resolve_message(data)
+
+
             #socket.send(bytes("stop", encoding="utf-8"))
+
+
+
 
 def client_thread(socket:socket,address:Tuple[str,int]) -> Thread:
     #print(socket.client)
@@ -36,7 +60,7 @@ while True:
     # in this case, we'll pretend this is a threaded server
 
     ct = client_thread(client_socket,address)
-    received_data = client_socket.recv(12)
+    received_data = client_socket.recv(1024)
 
     b = f"test-message, received: {received_data}"
     client_socket.sendall(bytes(b,encoding="utf-8"))

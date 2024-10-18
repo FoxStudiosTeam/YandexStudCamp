@@ -1,4 +1,6 @@
 import socket
+from idlelib.iomenu import encoding
+
 import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
@@ -23,7 +25,13 @@ class FSocket:
             try:
                 command = self.client_socket.recv(1024)
                 command_string = bytes(command).decode('utf-8')
-                self.resolve_command(command_string)
+                try:
+                    self.resolve_command(command_string)
+
+                except Exception as err:
+                    print(err)
+                    self.client_socket.send(bytes("error",encoding="utf-8"))
+
             except Exception as e:
                 print(e)
                 fs_ev.bus.emit("reconnect_tcp",self)
