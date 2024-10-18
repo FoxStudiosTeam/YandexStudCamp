@@ -281,12 +281,6 @@ fs_neuro_thread = FSocket(fs_motor)
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)
 
-
-
-t_camera_streamer = threading.Thread(target=fs_camera_streamer.camera_streamer_app.run, args=["port=8080"])
-threads.append(t_camera_streamer)
-t_stream_edited = threading.Thread(target=fs_stream_edited.fs_stream_edited_app.run)
-threads.append(t_stream_edited)
 # Создаем таймер
 ti = threading.Timer(0.1, status)
 ti.start()
