@@ -274,8 +274,10 @@ threads.append(t4)
 t5 = threading.Thread(target=fs_custom_light.run, args=())
 threads.append(t5)
 
+
+fs_movement = FsMovement()
 #Поток для работы с нейронной сетью
-fs_neuro_thread = FSocket(fs_motor)
+fs_neuro_thread = FSocket(fs_motor,fs_movement)
 
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)
@@ -306,13 +308,13 @@ servo.restore()
 go.motor_init()
 # Основной цикл программы
 
-fs_movement = FsMovement()
+
 
 # fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
 Hand().normal_state()
 
-fs_ev.bus.emit('metering_test', fs_movement, fs_motor)
+#fs_ev.bus.emit('metering_test', fs_movement, fs_motor)
 
 while True:
     '''
