@@ -37,10 +37,10 @@ class Infrared(object):
 			go.forward()
 		# Правый инфракрасный датчик обнаружил черную линию
 		elif gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 1:
-			go.right()
+			go.left()
 		# Левый инфракрасный датчик обнаружил черную линию
 		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 0:
-			go.left()
+			go.right()
 		# Оба инфракрасных датчика одновременно обнаруживают черную линию
 		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 1:
 			go.stop()
