@@ -1,16 +1,15 @@
 import socket
-from idlelib.iomenu import encoding
-
 import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
-from xr_startmain import fs_motor
+from fs_movement import FsMovement
 
 
 class FSocket:
-    def __init__(self,fs_motor : FSMover):
+    def __init__(self,fs_motor : FSMover, fs_movement: FsMovement):
         self.addr = ('192.168.2.121', 2002)
         self.fs_motor = fs_motor
+        self.fs_movement = fs_movement
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
@@ -38,6 +37,8 @@ class FSocket:
 
     def resolve_command(self, command_string: str):
         if command_string == "stop":
-            fs_ev.bus.emit("stop",fs_motor)
+            fs_ev.bus.emit("stop",self.fs_motor)
         if command_string == "move-forward":
-            fs_ev.bus.emit("move",fs_motor, Direction.FORWARD)
+            fs_ev.bus.emit("move",self.fs_motor, Direction.RIGHT)
+        if command_string == "first_move":
+            fs_ev.bus.emit('first_move', self.fs_movement, self.fs_motor)
