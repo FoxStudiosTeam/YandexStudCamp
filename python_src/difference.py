@@ -57,28 +57,30 @@ def parse_label(path):
     return boxes
 
 def parse_result(data):
-    boxes = []
-    for box in data.boxes:
-        boxes.append([
-            int(box.cls),
-            relative_to_absolute(box.xywhn.cpu().numpy().reshape(-1))
-            ])
-    return boxes
+    classes_names = data.names
+    classes = data.boxes.cls.cpu().numpy()
+    boxes = data.boxes.xyxy.cpu().numpy().astype(np.int32)
+    return classes_names, classes, boxes
 
 def int4(coords):
     return int(coords[0]), int(coords[1]), int(coords[2]), int(coords[3])
 
-def draw_boxes(img, boxes):
-    for box in boxes:
-        i, coords = box
-        sx, sy, ex, ey = coords
-        cv2.rectangle(img, (sx, sy), (ex, ey), COLORS[i], 2)
-    for box in boxes:
-        i, coords = box
-        sx, sy, ex, ey = coords
-        text_size, _ = cv2.getTextSize(LABELS[i], TEXT_FACE, TEXT_SIZE, TEXT_THICKNESS)
-        cv2.rectangle(img, (sx, sy), (sx + text_size[0], sy - text_size[1]), COLORS[i], -1)
-        cv2.putText(img, LABELS[i], (sx, sy), TEXT_FACE, TEXT_SIZE, (0, 0, 0), TEXT_THICKNESS)
+def draw_boxes(img, data, classes_names, classes, boxes):
+    for class_id,box,conf in zip(classes, boxes, data.boxes.cls):
+        if conf>0.9:
+            name = classes_names[int(class_id)]
+            x1, y1, x2, y2 = box
+            cv2.rectangle(img, (x1,y1), (x2,y2), COLORS[int(class_id)], 2)
+            cv2.putText(img, name, (x1,y1-10),cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[int(class_id)], 2)
+    #     i, coords = box
+    #     sx, sy, ex, ey = coords
+    #     cv2.rectangle(img, (sx, sy), (ex, ey), COLORS[i], 2)
+    # for box in boxes:
+    #     i, coords = box
+    #     sx, sy, ex, ey = coords
+    #     text_size, _ = cv2.getTextSize(LABELS[i], TEXT_FACE, TEXT_SIZE, TEXT_THICKNESS)
+    #     cv2.rectangle(img, (sx, sy), (sx + text_size[0], sy - text_size[1]), COLORS[i], -1)
+    #     cv2.putText(img, LABELS[i], (sx, sy), TEXT_FACE, TEXT_SIZE, (0, 0, 0), TEXT_THICKNESS)
     return img
 
 if __name__ == "__main__":
