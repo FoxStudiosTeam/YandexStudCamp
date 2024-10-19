@@ -49,9 +49,9 @@ VOICE_MOD_SET = {'normal': 0, 'openlight': 1, 'closelight': 2, 'forward': 3, 'ba
 # Флаг обнаружения пути
 PATH_DECT_FLAG = 0
 # Скорость слева
-LEFT_SPEED = 80
+LEFT_SPEED = 68
 # Скорость справа
-RIGHT_SPEED = 80
+RIGHT_SPEED = 70
 # Предыдущая скорость слева
 LASRT_LEFT_SPEED = 100
 # Предыдущая скорость справа
