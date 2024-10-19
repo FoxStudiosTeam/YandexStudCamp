@@ -38,9 +38,10 @@ class FSocket:
                 fs_ev.bus.emit("reconnect_tcp", self)
 
     def resolve_command(self, command_string: str):
-        if command_string == "stop":
+        commands = command_string.split('.')
+
+        if commands[0] == "stop":
             fs_ev.bus.emit("stop", self.fs_motor)
-        if command_string == "move-forward":
-            fs_ev.bus.emit("move", self.fs_motor, Direction.RIGHT)
-        if command_string == "first_move":
-            fs_ev.bus.emit('first_move', self.fs_movement, self.fs_motor)
+        if commands[0] == "move":
+            fs_ev.bus.emit("move", self.fs_motor, Direction.__getitem__(commands[1]))
+
