@@ -26,20 +26,13 @@ from fs_motor import FSMover
 import xr_config as cfg
 from fs_move_hand import Hand
 from fs_movement import FsMovement
-import fs_camera_streamer, fs_stream_edited
 from fs_socket import FSocket
 from xr_motor import RobotDirection
 
 go = RobotDirection()
-from xr_socket import Socket
-
-socket = Socket()
 from xr_infrared import Infrared
 
 infrared = Infrared()
-from xr_ultrasonic import Ultrasonic
-
-ultrasonic = Ultrasonic()
 from xr_camera import Camera
 
 camera = Camera()
@@ -102,25 +95,6 @@ def cruising_mode():
         # print("Infrared.avoiddrop")
         infrared.avoiddrop()
         time.sleep(0.05)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'avoidbyragar']:  # Переход в режим предотвращения столкновений с помощью ультразвукового датчика
-        # print("Ultrasonic.avoidbyragar")
-        ultrasonic.avoidbyragar()
-        time.sleep(0.5)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'send_distance']:  # Переход в режим измерения расстояния с помощью ультразвукового датчика
-        # print("Ultrasonic.send_distance")
-        ultrasonic.send_distance()
-        time.sleep(1)
-
-    elif cfg.CRUISING_FLAG == cfg.CRUISING_SET[
-        'maze']:  # Переход в режим прохождения лабиринта с помощью ультразвукового датчика
-        # print("Ultrasonic.maze")
-        ultrasonic.maze()
-        time.sleep(0.05)
-
     elif cfg.CRUISING_FLAG == cfg.CRUISING_SET['camera_normal']:  # Переход в режим отладки
         time.sleep(2)
         print("CRUISING_FLAG == 7")
@@ -283,8 +257,8 @@ t1 = threading.Thread(target=camera.run, args=())
 threads.append(t1)
 
 # Создание нового Bluetooth-потока
-t2 = threading.Thread(target=socket.bluetooth_server, args=())
-threads.append(t2)
+# t2 = threading.Thread(target=socket.bluetooth_server, args=())
+# threads.append(t2)
 
 # Создание нового TCP-потока через WiFi
 #t3 = threading.Thread(target=socket.tcp_server, args=())
@@ -300,18 +274,14 @@ threads.append(t4)
 t5 = threading.Thread(target=fs_custom_light.run, args=())
 threads.append(t5)
 
+
+fs_movement = FsMovement()
 #Поток для работы с нейронной сетью
-fs_neuro_thread = FSocket(fs_motor)
+fs_neuro_thread = FSocket(fs_motor,fs_movement)
 
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)
 
-
-
-t_camera_streamer = threading.Thread(target=fs_camera_streamer.camera_streamer_app.run, args=["port=8080"])
-threads.append(t_camera_streamer)
-t_stream_edited = threading.Thread(target=fs_stream_edited.fs_stream_edited_app.run)
-threads.append(t_stream_edited)
 # Создаем таймер
 ti = threading.Timer(0.1, status)
 ti.start()
@@ -338,13 +308,13 @@ servo.restore()
 go.motor_init()
 # Основной цикл программы
 
-fs_movement = FsMovement()
+
 
 # fs_ev.bus.emit('first_move', fs_movement, fs_motor)
 
 Hand().normal_state()
 
-fs_ev.bus.emit('metering_test', fs_movement, fs_motor)
+#fs_ev.bus.emit('metering_test', fs_movement, fs_motor)
 
 while True:
     '''
