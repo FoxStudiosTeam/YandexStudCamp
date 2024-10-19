@@ -2,13 +2,12 @@ import os
 from ultralytics import YOLO
 from config import EPOCHS, BATCH_SIZE
 
-# Конфигурация
-MODEL_PATH = 'models/yolov8n_model.pt'
 
 def train_model():
-    model = YOLO(MODEL_PATH)  # Используем путь к модели из переменной
+    model = YOLO('yolov8n.pt')  # Используем путь к модели из переменной
     results = model.train(
-        data='train.yaml',  # Убедитесь, что это правильный путь к вашим данным epochs=EPOCHS,
+        data='data/split/train',  # Убедитесь, что это правильный путь к вашим данным
+        epochs=EPOCHS,
         batch=BATCH_SIZE,
         # imgsz=960,
         hsv_h=0.02,

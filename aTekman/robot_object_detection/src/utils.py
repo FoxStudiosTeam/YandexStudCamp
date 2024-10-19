@@ -1,5 +1,3 @@
-# utils.py
-
 import os
 import cv2
 import numpy as np
@@ -7,18 +5,11 @@ from ultralytics import YOLO
 import matplotlib.pyplot as plt
 
 def prepare_data(data_dir):
-    """
-    Подготовка данных: разделение на обучающую и тестовую выборки.
-    """
-    # Здесь вы можете добавить код для подготовки данных
-    # Например, создание поддиректорий train/ и test/ и перемещение изображений
+
     print(f"Preparing data in directory: {data_dir}")
-    # Добавьте вашу логику здесь
 
 def load_model(model_path):
-    """
-    Загрузка предобученной модели из указанного пути.
-    """
+
     if os.path.exists(model_path):
         model = YOLO(model_path)
         print(f"Model loaded from {model_path}")

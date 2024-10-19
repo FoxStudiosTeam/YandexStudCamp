@@ -1,0 +1,37 @@
+{
+  "categories": [
+    {
+      "id": 0,
+      "name": "cube"
+    },
+    {
+      "id": 1,
+      "name": "korzina_green"
+    },
+    {
+      "id": 2,
+      "name": "korzina_red"
+    },
+    {
+      "id": 3,
+      "name": "object_knopka_blue"
+    },
+    {
+      "id": 4,
+      "name": "object_knopka_green"
+    },
+    {
+      "id": 5,
+      "name": "robot_green"
+    },
+    {
+      "id": 6,
+      "name": "robot_red"
+    }
+  ],
+  "info": {
+    "year": 2024,
+    "version": "1.0",
+    "contributor": "Label Studio"
+  }
+}
