@@ -9,9 +9,10 @@ class FSMover(RobotDirection):
 
     cur_direction : Direction = None
 
-    sec_t = 0.44
+    sec_tr = 0.512
+    sec_tl = 0.665  
 
-    sec_f = 1.25
+    sec_f = 0.5
     speed = 50/sec_f
     sec_d = speed/math.sqrt(2*(50**2))
 
