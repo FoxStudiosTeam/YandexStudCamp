@@ -166,6 +166,7 @@ class Target(Enum):
 
 class TcpServer:
     def __init__(self):
+        self.current_node = None
         self.target:Node = None
         self.client_socket = None
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -197,15 +198,13 @@ class TcpServer:
         self.current_graph: List[Node] = []
         self.current_path: List[Node] = []
         self.current_direction: Direction = None
-        self.current_pos_x: int = None
-        self.current_pos_y: int = None
         self.top_camera_utils = None
         self.last_target_name:Target = None
         self.target_name :Target = None
         self.next_target_name:Target = None
         self.node_util : NodeUtil = NodeUtil()
+        self.is_path_suspended : bool = False
 
-        # MODEL = YOLO("C:/Users/Hauptsturmfuhrer/Desktop/project/YandexStudCamp/python_src/best(3).pt")
 
     def predict(self, frame):
         return self.model.predict(frame)[0]
@@ -274,11 +273,12 @@ class TcpServer:
             classes_names, classes, boxes = self.parse_result(result)
             command = ""
 
-            local_name = None
 
             if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
+                self.last_target_name = self.target_name
                 self.target_name = Target.CART
             if self.last_target_name == Target.CART:
+                self.last_target_name = self.target_name
                 self.target_name = Target.BUTTON
 
 
@@ -293,7 +293,6 @@ class TcpServer:
                     if self.top_camera_utils != None:
                         cls_nm = classes_names[int(c)]
 
-                        #self.target_name.name
                         if cls_nm == self.target_name.name.lower():
                             x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
                             (x, y) = self.top_camera_utils.calculate_current_pos((x1 - x0, y1 - y0))
@@ -311,25 +310,35 @@ class TcpServer:
             # print(data)
 
     def graph_run(self) -> None:
-        self.current_path = self.a_star.a_star_simple(self.current_graph[46], self.target, self.current_graph)
+        self.current_path = self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
 
-        for elem in self.current_path:
-            self.current_node = elem
+        if self.is_path_suspended == False:
+            for elem in self.current_path:
+                self.current_node = elem
 
-            if elem.is_block == True:
-                command = f"stop"
-                self.client_socket.send(command.encode('utf-8'))
-                self.last_target_name = self.target_name
-                self.current_path = self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
-                self.graph_run()
+                if elem.is_block == True:
+                    command = f"stop"
+                    self.client_socket.send(command.encode('utf-8'))
+                    self.last_target_name = self.target_name
+                    self.current_path = self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
+                    self.graph_run()
 
-            if elem == self.current_graph[len(self.current_graph) - 1]:
-                command = f"stop"
-                self.client_socket.send(command.encode('utf-8'))
-            else:
-                command = f"move.{elem.direction.name}"
-                self.client_socket.send(command.encode('utf-8'))
-            time.sleep(0.005)
+                if self.current_node == self.current_path[len(self.current_path) - 1]:
+                    command = f"stop"
+                    self.is_path_suspended = True
+                    self.last_target_name = self.target_name
+                    self.client_socket.send(command.encode('utf-8'))
+
+
+
+                else:
+                    command = f"move.{elem.direction.name}"
+                    self.client_socket.send(command.encode('utf-8'))
+                time.sleep(0.005)
+        else:
+            while self.is_path_suspended == True:
+                print("suspended")
+                time.sleep(0.25)
 
 
     def run(self) -> None:
@@ -337,7 +346,7 @@ class TcpServer:
         self.target_name = Target.CART
         self.current_graph = self.node_util.create_graph()
         self.target = self.current_graph[50]
-
+        self.current_node = self.current_graph[46]
 
 
         #Thread(target=self.down_cam, args=[]).start()
