@@ -44,7 +44,7 @@ class Hand(Servo):
         self.set(1, 75)
         self.set(3, 90)
         self.set(4, 45)
-        time.sleep(3)
+        time.sleep(1)
         self.set(4, 85)
         self.set(1, 180)
         self.set(2, 90)
@@ -56,7 +56,7 @@ class Hand(Servo):
         self.set(1, 75)
         self.set(3, 90)
         self.set(4, 45)
-        time.sleep(3)
+        time.sleep(1)
         self.set(4, 90)
         self.set(1, 180)
         self.set(2, 90)
@@ -69,3 +69,10 @@ class Hand(Servo):
         time.sleep(0.5)
         self.set(4, 45)
         time.sleep(1)        
+
+    def push_button(self):
+        self.set(2, 180)
+        time.sleep(0.7)
+        self.set(2, 70)
+        time.sleep(0.7)
+        self.set(2, 90)

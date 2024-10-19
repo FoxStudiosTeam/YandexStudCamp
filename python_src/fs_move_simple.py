@@ -169,7 +169,15 @@ def create_graph():
     modifier = 4
     for x in range(8*modifier):
         for y in range(6*modifier):
-            if ((((x >= 7 and x <= 12) or (x >= 19 and x <= 24))  and y == 3) or (x == 7 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20))) or (y == 20 and ((x >= 7 and x <= 12) or (x >= 19 and x <= 24))) or (x == 24 and ((y >= 3 and y <= 8) or (y >= 15 and y <= 20)))):
+            if ((((x >= 7 and x <= 13) or (x >= 18 and x <= 24))  and y == 3) or 
+                (((x >=7 and x <= 13) or (x >= 18 and x<=24)) and y == 4) or 
+                (((y >= 3 and y <= 9) or (y >= 14 and y <= 20)) and x == 7) or
+                (((y >= 3 and y <= 9) or (y >= 14 and y <=20)) and x == 8) or  
+                (((x >= 7 and x <= 13) or (x >= 18 and x <= 24)) and y == 20) or
+                (((x >= 7 and x <= 13) or (x >= 18 and x <= 24)) and y == 19) or
+                (((y >= 3 and y <= 9) or (y >= 14 and y <= 20)) and x == 24) or
+                (((y >= 3 and y <= 9) or (y >= 14 and y <= 20)) and x == 23) or
+                (((x==12 or x==13) or (x == 18 or x == 19)) and ((y == 8 or y == 9) or (y == 15 or y == 14)))):
             #if x == 12 and y > 1:
                 nodes.append(Node(None, x, y, True))
             else:
@@ -177,6 +185,9 @@ def create_graph():
                 nodes.append(local_node)
 
     return nodes
+
+
+
 
 
 def test_graph():

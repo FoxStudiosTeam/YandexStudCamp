@@ -1,16 +1,17 @@
 from fs_move_simple import AStarPath, create_graph, Node, Direction
 from tkinter import *
+import time
 
 nodes = create_graph()
 a_star_path = AStarPath()
 
 # queue = a_star_path.a_star_simple(nodes[0], nodes[510],nodes)
-path = a_star_path.a_star_simple(nodes[0], nodes[526],nodes)
+path = a_star_path.a_star_simple(nodes[47], nodes[246+24*5],nodes)
 #path = a_star_path.a_star_simple(nodes[0], nodes[526])
 
 root = Tk()
 
-canvas = Canvas(root, width=250, height=250)
+canvas = Canvas(root)
 
 offset_x = 0
 offset_y = 0
@@ -61,6 +62,7 @@ for node in nodes:
 #     canvas.create_line(x0, y0, x1, y1, fill='blue', width=3)
 
 
+canvas.pack()
 
 
 for i in range (len(path)-1):
@@ -91,7 +93,8 @@ for i in range (len(path)-1):
 
     print(f'x :{elem.x} y: {elem.y} direction: {elem.direction}')
 
-    canvas.create_line(x0, y0, x1, y1, fill=fill_color, width=3)
+    line = canvas.create_line(x0, y0, x1, y1, fill=fill_color, width=3)
+    canvas.update()
+    time.sleep(0.25)
 
-canvas.grid(row=0, column=0)
 root.mainloop()
