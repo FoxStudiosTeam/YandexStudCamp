@@ -1,0 +1,7 @@
+cube
+korzina_green
+korzina_red
+object_knopka_blue
+object_knopka_green
+robot_green
+robot_red

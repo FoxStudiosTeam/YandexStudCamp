@@ -11,7 +11,8 @@ TRAIN_LABELS_PATH = 'data/labels/train/'
 TEST_IMAGES_PATH = 'data/images/test/'
 TEST_LABELS_PATH = 'data/labels/test/'
 
+
 # Другие параметры
-BATCH_SIZE = 16
+BATCH_SIZE = 24
 LEARNING_RATE = 0.001          #скорость обучения
-EPOCHS = 16
+EPOCHS = 48

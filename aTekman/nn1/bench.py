@@ -21,7 +21,7 @@ for model_label in model_labels:
 
 results = []
 for (model, name) in models:
-    result = model("https://ultralytics.com/images/bus.jpg")
+    result = model("C:/ssk/frame1448.jpg")
     a, b, c = \
         result[0].speed["preprocess"], \
         result[0].speed["inference"], \
