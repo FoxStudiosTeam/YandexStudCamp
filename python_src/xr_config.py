@@ -49,13 +49,13 @@ VOICE_MOD_SET = {'normal': 0, 'openlight': 1, 'closelight': 2, 'forward': 3, 'ba
 # Флаг обнаружения пути
 PATH_DECT_FLAG = 0
 # Скорость слева
-LEFT_SPEED = 68
+LEFT_SPEED = 70
 # Скорость справа
 RIGHT_SPEED = 70
 # Предыдущая скорость слева
-LASRT_LEFT_SPEED = 100
+LASRT_LEFT_SPEED = 70
 # Предыдущая скорость справа
-LASRT_RIGHT_SPEED = 100
+LASRT_RIGHT_SPEED = 70
 
 # Номер сервопривода
 SERVO_NUM = 1
