@@ -166,6 +166,7 @@ class Target(Enum):
 
 class TcpServer:
     def __init__(self):
+        self.target_catched = False
         self.current_node = None
         self.target:Node = None
         self.client_socket = None
@@ -240,15 +241,18 @@ class TcpServer:
             local_name = None
 
             for box in result.boxes:
-                for c in box.cls:
-                    print(f'{classes_names[int(c)]} - 0')
+                x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
 
-            if local_name == None:
-                pass
-            elif local_name == "cube":
-                command = "move-forward"
-            elif local_name == "sphere":
-                command = "stop"
+
+                if self.is_path_suspended == True and self.target_catched == False:
+                    if local_name == None:
+                        pass
+                    elif (local_name == "cube" or local_name == "circle") and (self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
+
+
+                    elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
+
+
 
             self.client_socket.send(command.encode('utf-8'))
             # raw_data = self.client_socket.recv(1024)
