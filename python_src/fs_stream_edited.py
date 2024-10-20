@@ -34,7 +34,8 @@ IMAGE_SIZE = (1, 1)
 fs_stream_edited_app = Flask(__name__)
 
 # MODEL = YOLO("/home/pi/work/python_src/best.pt")
-MODEL = YOLO("C:/Users/Hauptsturmfuhrer/Desktop/project/YandexStudCamp/python_src/best(3).pt")
+#MODEL = YOLO("C:/Users/Hauptsturmfuhrer/Desktop/project/YandexStudCamp/python_src/best(3).pt")
+MODEL = YOLO("./best.pt")
 def predict(frame):
     # return MODEL.predict(frame)[0]
     return MODEL.predict(frame)[0]
@@ -45,7 +46,8 @@ def index():
 
 
 def generate_frames():
-    cap = cv2.VideoCapture("http://192.168.2.81:8080?action=stream")
+    #"http://192.168.2.81:8080?action=stream"
+    cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
         if not ret:
