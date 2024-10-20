@@ -1,0 +1,6 @@
+path: C:\\kolka
+train: train
+val: val
+
+nc: 7
+names: ['blue_button', 'circle','cube', 'green_button','green_cart','is_wall', 'red_cart']
