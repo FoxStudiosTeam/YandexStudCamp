@@ -1,0 +1,6 @@
+path: C:\\Users\\tekma\\PycharmProjects\\YandexStudCamp\\datasets
+train: train_dataset
+val: eval_dataset
+
+nc: 2
+names: ['circle', 'cube']

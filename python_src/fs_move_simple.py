@@ -1,7 +1,7 @@
 import math
 from enum import Enum
 from queue import PriorityQueue
-from typing import List
+from typing import List, Tuple
 
 
 class Direction(Enum):
@@ -17,10 +17,11 @@ class Direction(Enum):
 
 class Node:
     def __init__(self, parent : object, x : int, y : int, is_block : bool):
-        self.direction = None
+        self.direction_grad : int = 0
+        self.direction : Direction = None
         self.x = x
         self.y = y
-        self.parent = None
+        self.parent : Node = None
         self.is_block = is_block
         self.g_cost: float = 0
         self.h_cost: float = 0
@@ -45,37 +46,33 @@ class NodeUtil:
     FORWARD - вверх
     BACK - вниз
     '''
-    def validate_direction(self, cur_node : Node, next_node : Node) -> Direction:
+    def validate_direction(self, cur_node : Node, next_node : Node) -> Tuple[Direction, int]:
         dir_x = next_node.x - cur_node.x
         dir_y = next_node.y - cur_node.y
-        if dir_x == 0 and dir_y < 0: return Direction.FORWARD
-        if dir_x == 0 and dir_y > 0: return Direction.BACK
-        if dir_x < 0 and dir_y > 0: return Direction.BACK_LEFT
-        if dir_x > 0 and dir_y > 0: return Direction.BACK_RIGHT
-        if dir_x < 0 and dir_y < 0: return Direction.FORWARD_LEFT
-        if dir_x > 0 and dir_y < 0: return Direction.FORWARD_RIGHT
-        if dir_x < 0 and dir_y == 0: return Direction.LEFT
-        if dir_x > 0 and dir_y == 0: return Direction.RIGHT
+        if dir_x == 0 and dir_y < 0: return Direction.FORWARD, 0
+        if dir_x == 0 and dir_y > 0: return Direction.BACK , 180
+        if dir_x < 0 and dir_y > 0: return Direction.BACK_LEFT, 225
+        if dir_x > 0 and dir_y > 0: return Direction.BACK_RIGHT, 135
+        if dir_x < 0 and dir_y < 0: return Direction.FORWARD_LEFT, 315
+        if dir_x > 0 and dir_y < 0: return Direction.FORWARD_RIGHT, 45
+        if dir_x < 0 and dir_y == 0: return Direction.LEFT, 270
+        if dir_x > 0 and dir_y == 0: return Direction.RIGHT, 90
 
 
 
-class AStarPath():
-    def __init__(self, nodes: List[Node]):
-        self.nodes = nodes
-
+class AStarPath:
     def distance(self, from_point: Node, target_point: Node):
         return math.sqrt(math.pow((target_point.x - from_point.x), 2) + math.pow((target_point.y - from_point.y), 2))
 
-    def get_neighbors(self, node: Node, end_node: Node):
+    def get_neighbors(self, node: Node, end_node: Node,nodes: List[Node]):
         neighbors = []
 
-        for local_node in self.nodes:
+        for local_node in nodes:
             if local_node == end_node:
                 local_node.f_cost = 0
 
             local_node.h_cost = self.distance(local_node, end_node)
             local_node.f_cost = local_node.g_cost + local_node.h_cost
-
             if (((local_node.x == node.x + 1) or (local_node.x == node.x - 1)) and
                 ((local_node.y == node.y + 1) or (local_node.y == node.y - 1))) and local_node != node:
                 neighbors.append(local_node)
@@ -124,7 +121,7 @@ class AStarPath():
 
     from queue import PriorityQueue
 
-    def a_star_simple(self, start_node: Node, end_node: Node) -> List[Node]:
+    def a_star_simple(self, start_node: Node, end_node: Node,nodes: List[Node]) -> List[Node]:
         queue = PriorityQueue()
         queue.put((0, start_node))
         start_node.g_cost = 0
@@ -139,7 +136,7 @@ class AStarPath():
                 while current_node:
                     path.append(current_node)
                     if current_node.parent:
-                        current_node.parent.direction = node_util.validate_direction(current_node.parent, current_node)
+                        current_node.parent.direction, current_node.parent.direction_grad = node_util.validate_direction(current_node.parent, current_node)
                     current_node = current_node.parent
                 path.reverse()
                 return path
@@ -149,7 +146,7 @@ class AStarPath():
 
             recent.append(current_node)
 
-            neighbors = self.get_neighbors(current_node, end_node)
+            neighbors = self.get_neighbors(current_node, end_node,nodes)
 
             for neighbor in neighbors:
                 if neighbor.is_block or neighbor in recent:

@@ -4,6 +4,8 @@
 # Все права защищены: XiaoR Technology (глубоко интегрированная компания Shenzhen XiaoEr Geek Technology Co., Ltd.; www.xiao-r.com) и форум WIFI-роботов www.wifi-robots.com
 # Этот код может быть свободно изменен, но запрещено использовать его в коммерческих целях!
 # На этот код подана заявка на защиту авторских прав программного обеспечения, и любые нарушения будут немедленно преследоваться по закону!
+import sys
+
 from fs_custom_light import CustomLight
 
 # @version: python3.7
@@ -19,9 +21,13 @@ import threading
 from threading import Timer
 from subprocess import call
 
+import fs_event as fs_ev
 from fs_motor import FSMover
 import xr_config as cfg
-from fs_invoker import test
+from fs_move_hand import Hand
+from fs_movement import FsMovement
+from fs_neuro_thread import NeuroThread
+import fs_camera_streamer, fs_stream_edited
 from xr_motor import RobotDirection
 
 go = RobotDirection()
@@ -225,7 +231,7 @@ def status():
             # 		#car_light.close_light()
         if cfg.LOOPS > 100:  # Таймер установлен на 0.01 секунды входа, превышение 100 указывает на то, что произошло 100 изменений, что составляет одну секунду времени. Некоторые данные, которые не нужно обновлять слишком часто, могут быть размещены здесь
             cfg.LOOPS = 0  # Очистка LOOPS
-            power.show_vol()  # Показание индикатора заряда батареи
+            # power.show_vol()  # Показание индикатора заряда батареи
             try:
                 oled.disp_cruising_mode()  # отображение режима OLED
             except:
@@ -256,7 +262,7 @@ if __name__ == '__main__':
     time.sleep(0.2)
     print("now bluetooth discoverable")
 
-    servo.restore()  # Возвращаем положение серводвигателя к исходному
+    # servo.restore()  # Возвращаем положение серводвигателя к исходному
     try:
         oled.disp_default()  # Отображаем начальную информацию на OLED
     except:
@@ -267,6 +273,7 @@ fs_custom_light = CustomLight()
 time.sleep(0.1)
 fs_motor = FSMover()
 
+fs_neuro_thread = NeuroThread(fs_motor)
 
 # Список потоков
 threads = []
@@ -291,12 +298,24 @@ threads.append(t4)
 t5 = threading.Thread(target=fs_custom_light.run, args=())
 threads.append(t5)
 
+#Поток для работы с нейронной сетью
+t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
+threads.append(t_neural)
+
+
+
+t_camera_streamer = threading.Thread(target=fs_camera_streamer.run)
+threads.append(t_camera_streamer)
+t_stream_edited = threading.Thread(target=fs_stream_edited.run)
+threads.append(t_stream_edited)
 # Создаем таймер
 ti = threading.Timer(0.1, status)
 ti.start()
 
 # Команда для запуска start_mjpg_streamer
-path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
+#path_sh = 'sh ' + os.path.split(os.path.abspath(__file__))[0] + '/start_mjpg_streamer.sh &'
+
+path_sh = 'sh /home/pi/work/mjpg-streamer-master/mjpg-streamer-experimental/start.sh'
 call("%s" % path_sh, shell=True)
 time.sleep(1)
 
@@ -309,11 +328,19 @@ for t in threads:
 # print("theads %s start..." %t)
 print("all theads start...>>>>>>>>>>>>")
 # Восстановить сохраненный угол сервопривода
-servo.store()
+servo.restore()
 
 # Восстановить сохраненную скорость двигателя
 go.motor_init()
 # Основной цикл программы
+
+fs_movement = FsMovement()
+
+# fs_ev.bus.emit('first_move', fs_movement, fs_motor)
+
+Hand().normal_state()
+
+fs_ev.bus.emit('metering_test', fs_movement, fs_motor)
 
 while True:
     '''
@@ -325,8 +352,6 @@ while True:
             if cfg.PS2_LOOPS > 20:
                 ps2.control()
                 cfg.PS2_LOOPS = 0
-
-            test(fs_motor)
     except Exception as e:  # Ловить и печатать ошибку
         time.sleep(0.1)
         print('Ошибка cruising_mod:', e)

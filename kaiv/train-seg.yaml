@@ -1,0 +1,6 @@
+path: ./
+train: upper_camera_polygon
+val: eval_upper_camera_polygon
+
+nc: 1
+names: ['poly']

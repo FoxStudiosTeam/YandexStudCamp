@@ -1,5 +1,6 @@
 from fs_move_simple import Direction
 import fs_event as fs_ev
+import time
 
 from xr_motor import RobotDirection
 
@@ -7,24 +8,28 @@ class FSMover(RobotDirection):
 
     @fs_ev.bus.on('stop')
     def stop(self):
-        self.stop()
+        super().stop()
 
     @fs_ev.bus.on('move')
     def move(self, direction: Direction):
         if direction == Direction.FORWARD:
-            self.forward()
+            super().forward()
         if direction == Direction.FORWARD_LEFT:
-            self.stop()
+            super().stop()
         if direction == Direction.FORWARD_RIGHT:
-            self.stop()
+            super().stop()
         if direction == Direction.RIGHT:
-            self.right()
+            super().right()
+            time.sleep(1)
+            super().forward()
         if direction == Direction.LEFT:
-            self.left()
+            super().left()
+            time.sleep(1)
+            super().forward()
         if direction == Direction.BACK:
-            self.back()
+            super().back()
         if direction == Direction.BACK_LEFT:
-            self.stop()
+            super().stop()
         if direction == Direction.BACK_RIGHT:
-            self.stop()
+            super().stop()
 
