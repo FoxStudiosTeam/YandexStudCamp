@@ -37,6 +37,13 @@ class Hand(Servo):
         self.set(7, 85)
         self.set(8, 105)
 
+    def test_catch(self):
+        self.set(2, 180)
+        time.sleep(0.2)
+        self.set(1, 75)
+        self.set(3, 90)
+        self.set(4, 45)
+
     def catch_cube(self):
         # 28см от машинки до кубика
         self.set(2, 180)
