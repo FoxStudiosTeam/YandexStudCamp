@@ -58,7 +58,7 @@ class FSMover(RobotDirection):
                 self.cur_direction = next_direction
             elif diff == -90:
                 super().left()
-                time.sleep(2*self.sec_tr)
+                time.sleep(2*self.sec_tl)
                 super().stop()
                 time.sleep(0.1)
                 self.cur_direction = next_direction
@@ -70,7 +70,7 @@ class FSMover(RobotDirection):
                 self.cur_direction = next_direction
             elif diff == -135:
                 super().left()
-                time.sleep(2*self.sec_tr)
+                time.sleep(2*self.sec_tl)
                 super().stop()
                 time.sleep(0.1)
                 self.cur_direction = next_direction
