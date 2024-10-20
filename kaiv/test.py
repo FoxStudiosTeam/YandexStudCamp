@@ -6,7 +6,7 @@ import time
 import os
 
 
-model = YOLO("./runs/segment/train/weights/best.pt")
+model = YOLO("./best.pt")
 
 
 
