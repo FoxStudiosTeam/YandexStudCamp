@@ -27,9 +27,9 @@ class Infrared(object):
 		Инфракрасное предотвращение столкновений
 		"""
 		if gpio.digital_read(gpio.IR_M) == 0:  # Если средний датчик обнаружил объект
-			return True
+			return "True"
 		else:
-			return False
+			return "False"
 			#go.stop()
 		# print("Инфракрасное предотвращение столкновений")
 

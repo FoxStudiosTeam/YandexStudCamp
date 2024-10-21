@@ -9,7 +9,7 @@ from xr_infrared import *
 
 class FSocket:
     def __init__(self, fs_motor: FSMover, fs_movement: FsMovement, xr_infrared: Infrared, fs_hand: Hand):
-        self.addr = ('192.168.2.121', 2002)
+        self.addr = ('192.168.2.132', 2002)
         self.fs_motor = fs_motor
         self.fs_movement = fs_movement
         self.xr_infrared = xr_infrared
@@ -34,7 +34,7 @@ class FSocket:
 
                 except Exception as err:
                     print(err)
-                    self.client_socket.send("error".encode('utf-8'))
+                    self.client_socket.send(repr(err).encode('utf-8'))
 
             except Exception as e:
                 print(e)
