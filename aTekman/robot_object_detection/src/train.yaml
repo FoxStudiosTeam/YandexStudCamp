@@ -1,6 +1,6 @@
-path: C:\\kolka
+path: C:\\lkl\\train
 train: train
 val: val
 
-nc: 7
-names: ['blue_button', 'circle','cube', 'green_button','green_cart','is_wall', 'red_cart']
+nc: 4
+names: ['button', 'cart ', 'circle', 'cube']

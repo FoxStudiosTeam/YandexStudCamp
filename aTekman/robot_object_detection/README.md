@@ -1,0 +1,1 @@
+Implementing neural networks in robotics at the YandexStudCamp event. Main used neural network 'yolov8n.pt'
