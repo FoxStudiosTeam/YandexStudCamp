@@ -9,7 +9,8 @@ from xr_infrared import *
 
 class FSocket:
     def __init__(self, fs_motor: FSMover, fs_movement: FsMovement, xr_infrared: Infrared, fs_hand: Hand):
-        self.addr = ('192.168.2.121', 2002)
+        #self.addr = ('192.168.2.121', 2002)
+        self.addr = ('192.168.1.236', 2002)
         self.fs_motor = fs_motor
         self.fs_movement = fs_movement
         self.xr_infrared = xr_infrared

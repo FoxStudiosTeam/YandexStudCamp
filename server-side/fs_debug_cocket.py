@@ -3,7 +3,8 @@ import socket
 
 class FSocket:
     def __init__(self):
-        self.addr = ('127.0.0.1', 2002)
+        self.addr = ('192.168.1.236', 2002)
+        # self.addr = ('127.0.0.1', 2002)
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):

@@ -22,7 +22,7 @@ go = RobotDirection()
 
 
 class Infrared(object):
-	def iravoid(self):
+	def iravoid(self) -> bool:
 		"""
 		Инфракрасное предотвращение столкновений
 		"""
@@ -30,8 +30,8 @@ class Infrared(object):
 			return True
 		else:
 			return False
-			#go.stop()
-		# print("Инфракрасное предотвращение столкновений")
+
+
 
 	def irfollow(self):
 		"""
