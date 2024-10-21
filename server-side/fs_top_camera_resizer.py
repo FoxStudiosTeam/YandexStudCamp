@@ -9,7 +9,7 @@ def resize_field(img):
 
     model = RectangleNet()
 
-    model.load_state_dict(torch.load("./MSE19.pth", weights_only=True))
+    model.load_state_dict(torch.load("C:/Users/UrFU/Desktop/YandexStudCamp/server-side/MSE19.pth", weights_only=True, map_location=torch.device('cpu')))
     model.eval()
 
     transform = transforms.Compose([

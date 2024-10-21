@@ -163,9 +163,9 @@ class AStarPath:
 class Target(Enum):
     CIRCLE = 0
     CUBE = 1
-    CART = 2
-    BUTTON = 3
-    BASE = 4
+    GREEN_CART = 2
+    RED_CART = 3
+    BLUE_BUTTON = 4
 
 
 class TcpServer:
@@ -198,7 +198,8 @@ class TcpServer:
 
         self.image_size = (1, 1)
 
-        self.model = YOLO("./Artem_welll_01.pt")
+        self.model = YOLO("C:/Users/UrFU/Desktop/YandexStudCamp/server-side/down_cam_artem100.pt")
+        self.model_top = YOLO("C:/Users/UrFU/Desktop/YandexStudCamp/server-side/best.pt")
         self.is_target_visible: bool = False
         self.a_star = AStarPath()
         self.current_graph: List[Node] = []
@@ -211,8 +212,8 @@ class TcpServer:
         self.node_util: NodeUtil = NodeUtil()
         self.is_path_suspended: bool = False
 
-    def predict(self, frame):
-        return self.model.predict(frame)[0]
+    def predict(self, frame, model):
+        return model.predict(frame)[0]
 
     def validate(self, message, command):
         if message == "error":
@@ -255,9 +256,9 @@ class TcpServer:
 
     def down_cam(self) -> None:
         # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
-        # cum = cv2.VideoCapture(f"http://192.168.2.81:8080/?action=stream")
+        cum = cv2.VideoCapture(f"http://192.168.2.81:8080/?action=stream")
         # cum = cv2.VideoCapture(0)
-        cum = cv2.VideoCapture("http://10.5.17.149:8080")
+        #cum = cv2.VideoCapture("http://10.5.17.149:8080")
         success, frame = cum.read()
 
         while success:
@@ -265,44 +266,48 @@ class TcpServer:
             if not ret:
                 break
 
-            result = self.predict(frame)
+            result = self.predict(frame, self.model)
             classes_names, classes, boxes = self.parse_result(result)
             command = ""
-
+            # cv2.imshow("image", frame)
             local_name = None
 
-            for box in result.boxes:
-                x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                x_centered = x0 + (x1 - x0) / 2
-                y_centered = y0 + (y1 - y0) / 2
+            try:
+                for box in result.boxes:
+                    x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
+                    x_centered = x0 + (x1 - x0) / 2
+                    y_centered = y0 + (y1 - y0) / 2
 
-                grip_range = [73, 193, 276, 237]
-                push_range = []
-                drop_range = [120, 205, 300, 271]
+                    grip_range = [73, 193, 276, 237]
+                    push_range = []
+                    drop_range = [120, 205, 300, 271]
 
-                is_inside = None
+                    is_inside = None
 
-                if self.is_path_suspended == True and self.target_catched == False:
+                    if self.is_path_suspended == True and self.target_catched == False:
 
-                    if local_name == None:
-                        command = f"move.{Direction.RIGHT.name}"
-                        self.client_socket.send(command.encode('utf-8'))
-                        continue
-                    elif (local_name == "cube" or local_name == "circle") and (
-                            self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
-                        is_inside = self.is_target_inside(x_centered, y_centered, grip_range)
-                        if is_inside == True:
-                            command = f"catch_{local_name}"
-                            self.target_catched = True
-                            self.aim_path = self.inverted_path()
-                        else:
-                            command = f"aim {is_inside}"
-                            self.aim_path.append(is_inside)
+                        if local_name == None:
+                            command = f"move.{Direction.RIGHT.name}"
+                            self.client_socket.send(command.encode('utf-8'))
+                            continue
+                        elif (local_name == "cube" or local_name == "circle") and (
+                                self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
+                            is_inside = self.is_target_inside(x_centered, y_centered, grip_range)
+                            if is_inside == True:
+                                command = f"catch_{local_name}"
+                                self.target_catched = True
+                                self.aim_path = self.inverted_path()
+                            else:
+                                command = f"aim {is_inside}"
+                                self.aim_path.append(is_inside)
 
-                        self.client_socket.send(command.encode('utf-8'))
-                    elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
+                            self.client_socket.send(command.encode('utf-8'))
+                        elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
 
-                        self.client_socket.send(command.encode('utf-8'))
+                            self.client_socket.send(command.encode('utf-8'))
+            except ValueError as e:
+                print(e)
+                continue
         # raw_data = self.client_socket.recv(1024)
         # data = bytes(raw_data).decode('utf-8')
         # self.validate(data, command)
@@ -318,36 +323,44 @@ class TcpServer:
             cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
             cum = cv2.VideoCapture(cum_addr)
             success, rawimg = cum.read()
-
+            count = 0
             while success:
                 success, rawimg = cum.read()
                 img = fix_fish_eye(rawimg, cum)
                 frame = resize_field(img)
 
-                result = self.predict(frame)
+                # cv2.imwrite("C:/Users/UrFU/Desktop/YandexStudCamp/server-side/debug/frame%d.jpg" % count, frame)
+                # count += 1
+
+                result = self.predict(frame, self.model_top)
                 classes_names, classes, boxes = self.parse_result(result)
+
+                # cv2.imshow('pivo',frame)
+                # cv2.waitKey(0)
+                # time.sleep(0.033)
                 command = ""
 
                 if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
                     self.last_target_name = self.target_name
-                    self.target_name = Target.CART
-                if self.last_target_name == Target.CART:
+                    self.target_name = Target.GREEN_CART
+                if self.last_target_name == Target.GREEN_CART:
                     self.last_target_name = self.target_name
-                    self.target_name = Target.BUTTON
+                    self.target_name = Target.BLUE_BUTTON
 
                 for box in result.boxes:
                     for c in box.cls:
-                        if c == "game-border":
-                            x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                            self.top_camera_utils = TopCameraUtils(x1 - x0, y1 - y0)
+                    #     if c == "game-border":
+                    #         x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
+                    #         self.top_camera_utils = TopCameraUtils(x1 - x0, y1 - y0)
 
-                        print(f'{classes_names[int(c)]} - 1')
-
+                        # print(f'{classes_names[int(c)]} - 1')
+                        self.top_camera_utils = TopCameraUtils(x_pic=480,y_pic=640)
                         if self.top_camera_utils != None:
                             cls_nm = classes_names[int(c)]
-
+                            print(cls_nm)
                             if cls_nm == self.target_name.name.lower():
                                 x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
+                                print(x0, y0, x1, y1)
                                 (x, y) = self.top_camera_utils.calculate_current_pos((x1 - x0, y1 - y0))
 
                                 for elem in self.current_graph:
@@ -365,7 +378,7 @@ class TcpServer:
         command = f"check_wall"
         self.client_socket.send(command.encode('utf-8'))
         data = self.client_socket.recv(1024)
-        if eval(data) == True:
+        if eval(data) == "True":
             return True
         else:
             return False
@@ -415,10 +428,13 @@ class TcpServer:
 
 
                 else:
-                    command = f"move.{elem.direction.name}"
+                    if self.current_node.direction != None:
+                        command = f"move.{elem.direction.name}"
+                    else:
+                        continue
 
                 self.client_socket.send(command.encode('utf-8'))
-                time.sleep(0.005)
+                time.sleep(1)
 
         else:
             while self.is_path_suspended == True:
@@ -437,11 +453,11 @@ class TcpServer:
 
     def run(self) -> None:
         self.client_socket, address = self.socket.accept()
-        self.target_name = Target.CART
+        self.target_name = Target.CIRCLE
         self.current_graph = self.node_util.create_graph()
-        self.target = self.current_graph[50]
-        self.current_node = self.current_graph[46]
-        value = input(str())
+        self.target = self.current_graph[47]
+        self.current_node = self.current_graph[50]
+        value = input("write color:")
         value = f"color.{value}"
         self.client_socket.send(value.encode("utf-8"))
 
