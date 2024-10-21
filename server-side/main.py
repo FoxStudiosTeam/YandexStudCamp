@@ -298,13 +298,22 @@ class TcpServer:
                                 self.target_catched = True
                                 self.aim_path = self.inverted_path()
                             else:
-                                command = f"aim {is_inside}"
+                                command = f"aim {is_inside.name}"
                                 self.aim_path.append(is_inside)
 
                             self.client_socket.send(command.encode('utf-8'))
                         elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
-
-                            self.client_socket.send(command.encode('utf-8'))
+                            is_inside = self.is_target_inside(x_centered, y_centered, push_range)
+                            if is_inside == True:
+                                command = f"push"
+                                self.target_catched = True
+                                self.aim_path = self.inverted_path()
+                            else:
+                                command = f'aim {is_inside.name}'
+                                self.aim_path.append(is_inside)
+                    if local_name == "cart" and self.target_name == Target.CART:
+                        self.client_socket.send(command.encode('utf-8'))
+                        self.client_socket.send(command.encode('utf-8'))
             except ValueError as e:
                 print(e)
                 continue
