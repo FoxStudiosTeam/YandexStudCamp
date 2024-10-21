@@ -5,7 +5,16 @@ from queue import PriorityQueue
 from threading import Thread
 from typing import List, Tuple
 from fs_top_camera_utils import TopCameraUtils
-
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset
+import torchvision.transforms as transforms
+import cv2
+import numpy as np
+from PIL import Image
+from train import RectangleNet
 import cv2
 import math
 import numpy as np
@@ -310,51 +319,103 @@ class TcpServer:
         # NN
 
     def top_cum(self):
-        # cum = cv2.VideoCapture("http://10.5.17.149:8080")
-        cum = cv2.VideoCapture(0)
-        success, frame = cum.read()
+        with torch.no_grad():
+            model = RectangleNet()
+            cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
+            model.load_state_dict(torch.load(cum_addr, weights_only=True))
+            model.eval()
 
-        while success:
-            ret, frame = cum.read()
-            if not ret:
-                break
+            transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Resize((128, 128))
+            ])
 
-            result = self.predict(frame)
-            classes_names, classes, boxes = self.parse_result(result)
-            command = ""
+            # cum = cv2.VideoCapture("http://10.5.17.149:8080")
+            cum = cv2.VideoCapture(0)
+            success, frame = cum.read()
 
-            if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
-                self.last_target_name = self.target_name
-                self.target_name = Target.CART
-            if self.last_target_name == Target.CART:
-                self.last_target_name = self.target_name
-                self.target_name = Target.BUTTON
+            while success:
+                ret, img = cum.read()
 
-            for box in result.boxes:
-                for c in box.cls:
-                    if c == "game-border":
-                        x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                        self.top_camera_utils = TopCameraUtils(x1 - x0, y1 - y0)
+                image = cv2.resize(img, (256, 256))
+                height, width, _ = image.shape
+                center_x, center_y = width // 2, height // 2
+                top_left = image[0:center_y, 0:center_x]
+                top_right = image[0:center_y, center_x:width]
+                top_right = cv2.flip(top_right, 1)
+                bottom_right = image[center_y:height, center_x:width]
+                bottom_right = cv2.flip(bottom_right, -1)
+                bottom_left = image[center_y:height, 0:center_x]
+                bottom_left = cv2.flip(bottom_left, 0)
+                images = [transform(top_left), transform(top_right), transform(bottom_right), transform(bottom_left)]
+                images_batch = torch.stack(images)
+                output = model(images_batch)
+                output = output.detach().numpy()
+                tl = output[0]
+                tl = tl * 0.5
+                tr = output[1]
+                tr = tr * 0.5
+                tr[0] = 1 - tr[0]
+                br = output[2]
+                br = br * 0.5
+                br = 1 - br
+                bl = output[3]
+                bl = bl * 0.5
+                bl[1] = 1 - bl[1]
 
-                    print(f'{classes_names[int(c)]} - 1')
+                img_size = img.shape[:2][::-1]
 
-                    if self.top_camera_utils != None:
-                        cls_nm = classes_names[int(c)]
+                src_points = np.array([tl * img_size, tr * img_size, br * img_size, bl * img_size], dtype='float32')
+                dst_points = np.array([[0, 0], [800, 0], [800, 600], [0, 600]], dtype='float32')
+                matrix = cv2.getPerspectiveTransform(src_points, dst_points)
+                frame = cv2.warpPerspective(img, matrix, (800, 600))
 
-                        if cls_nm == self.target_name.name.lower():
+                cv2.circle(img, (int(tl[0] * img_size[0]), int(tl[1] * img_size[1])), 5, (0, 0, 255), -1)
+                cv2.circle(img, (int(tr[0] * img_size[0]), int(tr[1] * img_size[1])), 5, (0, 0, 255), -1)
+                cv2.circle(img, (int(br[0] * img_size[0]), int(br[1] * img_size[1])), 5, (0, 0, 255), -1)
+                cv2.circle(img, (int(bl[0] * img_size[0]), int(bl[1] * img_size[1])), 5, (0, 0, 255), -1)
+
+
+
+                if not ret:
+                    break
+
+                result = self.predict(frame)
+                classes_names, classes, boxes = self.parse_result(result)
+                command = ""
+
+                if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
+                    self.last_target_name = self.target_name
+                    self.target_name = Target.CART
+                if self.last_target_name == Target.CART:
+                    self.last_target_name = self.target_name
+                    self.target_name = Target.BUTTON
+
+                for box in result.boxes:
+                    for c in box.cls:
+                        if c == "game-border":
                             x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                            (x, y) = self.top_camera_utils.calculate_current_pos((x1 - x0, y1 - y0))
+                            self.top_camera_utils = TopCameraUtils(x1 - x0, y1 - y0)
 
-                            for elem in self.current_graph:
-                                if elem.x == x and elem.y == y:
-                                    self.target = elem
-                                    break
+                        print(f'{classes_names[int(c)]} - 1')
 
-            # raw_data = self.client_socket.recv(1024)
-            # data = bytes(raw_data).decode('utf-8')
-            # self.validate(data, command)
+                        if self.top_camera_utils != None:
+                            cls_nm = classes_names[int(c)]
 
-            # print(data)
+                            if cls_nm == self.target_name.name.lower():
+                                x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
+                                (x, y) = self.top_camera_utils.calculate_current_pos((x1 - x0, y1 - y0))
+
+                                for elem in self.current_graph:
+                                    if elem.x == x and elem.y == y:
+                                        self.target = elem
+                                        break
+
+                # raw_data = self.client_socket.recv(1024)
+                # data = bytes(raw_data).decode('utf-8')
+                # self.validate(data, command)
+
+                # print(data)
 
     def check_is_wall(self) -> bool:
         command = f"check_wall"
