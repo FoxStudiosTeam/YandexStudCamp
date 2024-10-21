@@ -4,14 +4,16 @@ import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
 from fs_movement import FsMovement
+from fs_move_hand import Hand
 from xr_infrared import *
 
 class FSocket:
-    def __init__(self, fs_motor: FSMover, fs_movement: FsMovement, xr_infrared: Infrared):
+    def __init__(self, fs_motor: FSMover, fs_movement: FsMovement, xr_infrared: Infrared, fs_hand: Hand):
         self.addr = ('192.168.2.121', 2002)
         self.fs_motor = fs_motor
         self.fs_movement = fs_movement
         self.xr_infrared = xr_infrared
+        self.fs_hand = fs_hand
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
@@ -47,6 +49,25 @@ class FSocket:
             fs_ev.bus.emit("move", self.fs_motor, Direction.__getitem__(commands[1]))
         if commands[0] == "color":
             fs_ev.bus.emit("color", commands[1])
+        if commands[0] == "aim.FORWARD":
+            fs_ev.bus.emit("aim", self.fs_motor, Direction.FORWARD)
+        if commands[0] == "aim.RIGHT":
+            fs_ev.bus.emit("aim", self.fs_motor, Direction.RIGHT)
+        if commands[0] == "aim.LEFT":
+            fs_ev.bus.emit("aim", self.fs_motor, Direction.LEFT)
+        if commands[0] == "aim.BACK":
+            fs_ev.bus.emit("aim", self.fs_motor, Direction.BACK)
+        if commands[0] == "catch_cube":
+            fs_ev.bus.emit("catch_cube", self.fs_hand)
+        if commands[0] == "catch_circle":
+            fs_ev.bus.emit("catch_circle", self.fs_hand)
+        if commands[0] == "push":
+            fs_ev.bus.emit("push", self.fs_hand)
+        if commands[0] == "drop":
+            fs_ev.bus.emit("drop", self.fs_hand)
+        if commands[0] == "normal_state":
+            fs_ev.bus.emit("normal_state", self.fs_hand)
+
         if commands[0] == "check_wall":
             command = f"{self.xr_infrared.iravoid()}"
             self.client_socket.send(command.encode('utf-8'))

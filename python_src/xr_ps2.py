@@ -98,26 +98,23 @@ class PS2(object):
 				cfg.PS2_LASTKEY = read_ps2
 
 			if read_ps2 == cfg.PS2_KEY['PSB_RED']:  # Равно красной кнопке
-				# print('PSB_RED')
-				if (cfg.ANGLE[6] - add) < 180:
-					cfg.ANGLE[6] = cfg.ANGLE[6] + add
-				else:
-					cfg.ANGLE[6] = 180
-				servo.set(7, cfg.ANGLE[6])
+				hand.push_button()
+				time.sleep(0.5)
+				hand.normal_state()
+				cfg.PS2_LASTKEY = read_ps2
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_PINK']:  # Равно розовой кнопке
 				# print('PSB_BLUE')
 				hand.catch_cube()
+				cfg.PS2_LASTKEY = read_ps2
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_GREEN']:  # Равно зеленой кнопке
 				# print('PSB_GREEN')
 				hand.drop()
 				hand.normal_state()
+				cfg.PS2_LASTKEY = read_ps2
 
 			elif read_ps2 == cfg.PS2_KEY['PSB_BLUE']:  # Равно синей кнопке
 				# print('PSB_PINK')
-				if (cfg.ANGLE[7] - add) > 0:
-					cfg.ANGLE[7] = cfg.ANGLE[7] - add
-				else:
-					cfg.ANGLE[7] = 0
-				servo.set(8, cfg.ANGLE[7])
+				hand.catch_sphere()
+				cfg.PS2_LASTKEY = read_ps2
