@@ -160,7 +160,7 @@ class AStarPath:
 
 class Target(Enum):
     CIRCLE = 0
-    KUBE = 1
+    CUBE = 1
     CART = 2
     BUTTON = 3
     BASE = 4
@@ -224,7 +224,7 @@ class TcpServer:
         boxes = data.boxes.xyxy.cpu().numpy().astype(np.int32)
         return classes_names, classes, boxes
 
-    def is_target_inside(self, x_centered: int, y_centered: int, range : list) -> bool:
+    def is_target_inside(self, x_centered: int, y_centered: int, range : list):
         # внутри = x01 < x_centered < x02; y01 < y_centered < y02;
 
         x01, y01, x02, y02 = range
@@ -240,17 +240,17 @@ class TcpServer:
                 return Direction.FORWARD
             elif y02 < y_centered:
                 return Direction.BACK
-    
+
     def inverted_path(self, path: List):
         inverted_path = []
         for elem in path:
             if elem == Direction.FORWARD: inverted_path.append(Direction.BACK)
             if elem == Direction.BACK: inverted_path.append(Direction.FORWARD)
             if elem == Direction.RIGHT: inverted_path.append(Direction.LEFT)
-            if elem == Direction.LEFT: inverted_path.append(Direction.RIGHT) 
+            if elem == Direction.LEFT: inverted_path.append(Direction.RIGHT)
         self.aim_path = []
-        return inverted_path 
-                   
+        return inverted_path
+
 
     def down_cam(self) -> None:
         # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
@@ -282,7 +282,7 @@ class TcpServer:
                 is_inside = None
 
                 if self.is_path_suspended == True and self.target_catched == False:
-                    
+
                     if local_name == None:
                         command = f"move.{Direction.RIGHT.name}"
                         self.client_socket.send(command.encode('utf-8'))
@@ -308,7 +308,6 @@ class TcpServer:
         # print(data)
 
         # NN
-
 
     def top_cum(self):
         # cum = cv2.VideoCapture("http://10.5.17.149:8080")
@@ -357,6 +356,22 @@ class TcpServer:
 
             # print(data)
 
+    def check_is_wall(self) -> bool:
+        command = f"check_wall"
+        self.client_socket.send(command.encode('utf-8'))
+        data = self.client_socket.recv(1024)
+        if eval(data) == True:
+            return True
+        else:
+            return False
+
+    def check_wall_suspend(self):
+        command = f"stop"
+        self.client_socket.send(command.encode('utf-8'))
+        self.set_wall()
+        self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
+        self.graph_run()
+
 
     def graph_run(self) -> None:
         self.current_path = self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
@@ -378,16 +393,44 @@ class TcpServer:
                     self.last_target_name = self.target_name
                     self.client_socket.send(command.encode('utf-8'))
 
+                if (14 <= self.current_node.x <= 17) and (8 <= self.current_node.y <= 9):
+                    if self.check_is_wall():
+                        self.check_wall_suspend()
+
+                if (12 <= self.current_node.x <= 13) and (10 <= self.current_node.y <= 13):
+                    if self.check_is_wall():
+                        self.check_wall_suspend()
+
+                if (14 <= self.current_node.x <= 17) and (14 <= self.current_node.y <= 15):
+                    if self.check_is_wall():
+                        self.check_wall_suspend()
+
+                if (18 <= self.current_node.x <= 19) and (10 <= self.current_node.y <= 13):
+                    if self.check_is_wall():
+                        self.check_wall_suspend()
 
 
                 else:
                     command = f"move.{elem.direction.name}"
-                    self.client_socket.send(command.encode('utf-8'))
+
+                self.client_socket.send(command.encode('utf-8'))
                 time.sleep(0.005)
+
         else:
             while self.is_path_suspended == True:
                 print("suspended")
                 time.sleep(0.25)
+
+
+    def set_wall(self):
+        if (14 <= self.current_node.x <= 17) and (self.current_node.y == 7 or 16):
+            for elem in self.current_graph:
+                if 14 <= elem.x <= 17 and elem.y in [8, 9, 4, 5]:
+                    elem.is_block = True
+        if (self.current_node.x == 11 or 20) and (10 <= self.current_node.y <= 13):
+            for elem in self.current_graph:
+                if elem.x in [12, 13, 18, 19] and 10 <= elem.y <= 13:
+                    elem.is_block = True
 
 
     def run(self) -> None:
