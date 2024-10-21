@@ -298,23 +298,34 @@ class TcpServer:
                                 command = f"catch_{local_name}"
                                 self.target_catched = True
                                 self.aim_path = self.inverted_path()
+                                self.client_socket.send(command.encode('utf-8'))
                             else:
                                 command = f"aim {is_inside.name}"
                                 self.aim_path.append(is_inside)
-
+                                self.client_socket.send(command.encode('utf-8'))
                             self.client_socket.send(command.encode('utf-8'))
-                        elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
+                        elif local_name == "button" and (self.target_name == Target.BLUE_BUTTON or self.target_name == Target.GREEN_BUTTON) and self.is_path_suspended == True:
                             is_inside = self.is_target_inside(x_centered, y_centered, push_range)
                             if is_inside == True:
                                 command = f"push"
                                 self.target_catched = True
                                 self.aim_path = self.inverted_path()
+                                self.client_socket.send(command.encode('utf-8'))
                             else:
                                 command = f'aim {is_inside.name}'
                                 self.aim_path.append(is_inside)
-                    if local_name == "cart" and self.target_name == Target.CART:
-                        self.client_socket.send(command.encode('utf-8'))
-                        self.client_socket.send(command.encode('utf-8'))
+                                self.client_socket.send(command.encode('utf-8'))
+                    if local_name == "cart" and self.target_name == self.CART:
+                        is_inside = self.is_target_inside(x_centered, y_centered, drop_range)
+                        if is_inside == True:
+                            command = f"drop"
+                            self.target_catched = True
+                            self.aim_path = self.inverted_path()
+                            self.client_socket.send(command.encode('utf-8'))
+                        else:
+                            command = f'drop'
+                            self.aim_path.append(is_inside)
+                            self.client_socket.send(command.encode('utf-8'))
             except ValueError as e:
                 print(e)
                 continue
@@ -353,10 +364,12 @@ class TcpServer:
 
                 if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
                     self.last_target_name = self.target_name
-                    self.target_name = Target.CART
-                if self.last_target_name == Target.GREEN_CART:
+                    self.target_name = self.CART
+                if self.last_target_name == self.CART:
                     self.last_target_name = self.target_name
                     self.target_name = Target.BLUE_BUTTON
+                if self.is_path_suspended == True and self.target_catched == True:
+                    self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
 
                 for box in result.boxes:
                     for c in box.cls:
@@ -365,7 +378,7 @@ class TcpServer:
                     #         self.top_camera_utils = TopCameraUtils(x1 - x0, y1 - y0)
 
                         # print(f'{classes_names[int(c)]} - 1')
-                        self.top_camera_utils = TopCameraUtils(x_pic=480,y_pic=640)
+                        self.top_camera_utils = TopCameraUtils(x_pic=800,y_pic=600)
                         if self.top_camera_utils != None:
                             cls_nm = classes_names[int(c)]
                             print(cls_nm)
@@ -441,10 +454,10 @@ class TcpServer:
                 else:
                     if self.current_node.direction != None:
                         command = f"move.{elem.direction.name}"
+                        self.client_socket.send(command.encode('utf-8'))
                     else:
                         continue
 
-                self.client_socket.send(command.encode('utf-8'))
                 time.sleep(1)
 
         else:
@@ -470,6 +483,8 @@ class TcpServer:
         self.current_node = self.current_graph[50]
         value = input("write color:")
         self.team_color = value
+        if self.team_color == 'red': self.CART = Target.RED_CART
+        elif self.team_color == 'green': self.CART = Target.GREEN_CART
         value = f"color.{value}"
         self.client_socket.send(value.encode("utf-8"))
         # Thread(target=self.down_cam, args=[]).start()
