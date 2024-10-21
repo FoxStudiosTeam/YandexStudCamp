@@ -34,7 +34,7 @@ IMAGE_SIZE = (1, 1)
 
 app = Flask(__name__)
 
-MODEL = YOLO("./best.pt")
+MODEL = YOLO("./1.pt")
 
 def predict(frame):
     return MODEL.predict(frame)[0]

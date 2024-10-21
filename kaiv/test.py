@@ -6,14 +6,14 @@ import time
 import os
 
 
-model = YOLO("./best.pt")
+model = YOLO("./1.pt")
 
 
 
 
-r = model("../datasets/eval_upper_camera_polygon/1frame+0 (2).jpg")
+r = model("./img.jpg")
 
-img = cv2.imread("../datasets/eval_upper_camera_polygon/1frame+0 (2).jpg")
+img = cv2.imread("./img.jpg").astype(np.float32)
 
 IMG_SIZE = (1920, 1080)
 
@@ -40,10 +40,11 @@ for vertex_coordinates in r[0].masks.xy[0]:
     ld_d = dist_squared(vp, (0, IMG_SIZE[1]))
     if ld == None or ld[0] > ld_d:
         ld = (ld_d, vp)
+    cv2.circle(img, [int(vertex_coordinates[0]), int(vertex_coordinates[1])], 5, (0, 0, 255), -1)
 
 cv2.circle(img, [int(lu[1][0]), int(lu[1][1])], 5, (0, 0, 255), -1)
 cv2.circle(img, [int(ru[1][0]), int(ru[1][1])], 5, (0, 0, 255), -1)
 cv2.circle(img, [int(rd[1][0]), int(rd[1][1])], 5, (0, 0, 255), -1)
 cv2.circle(img, [int(ld[1][0]), int(ld[1][1])], 5, (0, 0, 255), -1)
-
 cv2.imwrite("test.jpg", img)
+

@@ -6,10 +6,11 @@ import time
 import os
 
 if __name__ == "__main__":
-    model = YOLO("yolo11m-seg.pt")
+    model = YOLO("model-seg.yaml")
     model.train(
         data='train-seg.yaml', epochs=24, batch=12,
         imgsz=960,
+        task="segment",
         #workers=0,
         hsv_h= 0.02,
         hsv_s= 0,
