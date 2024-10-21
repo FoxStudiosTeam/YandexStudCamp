@@ -4,17 +4,16 @@ from config import EPOCHS, BATCH_SIZE
 
 
 def train_model():
-    model = YOLO('C:\\FoxStudios\\Model pavel\\best.pt')  # И
+    model = YOLO('C:\\Users\\weednw\\PycharmProjects\\YandexStudCamp\\aTekman\\robot_object_detection\\src\\runs\\detect\\train2\\weights\\best.pt')
     results = model.train(
         data='train.yaml',
         epochs=EPOCHS,
         batch=BATCH_SIZE,
-        # imgsz=960,
         hsv_h=0.6,
         hsv_s=0.2,
         hsv_v=0.4,
         degrees=0,
-        translate=0,
+        translate=0.3,
         scale=0.5,
         shear=0.2,
         perspective=0.0,

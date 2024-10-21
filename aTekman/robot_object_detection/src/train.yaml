@@ -1,6 +1,6 @@
-path: C:\\lkl\\train
+path: C:\\lkl\\robots
 train: train
 val: val
 
-nc: 4
-names: ['button', 'cart ', 'circle', 'cube']
+nc: 5
+names: ['robot', 'button', 'cart ', 'circle', 'cube']
