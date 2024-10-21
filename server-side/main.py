@@ -166,6 +166,7 @@ class Target(Enum):
     GREEN_CART = 2
     RED_CART = 3
     BLUE_BUTTON = 4
+    GREEN_BUTTON = 5
 
 
 class TcpServer:
@@ -328,8 +329,8 @@ class TcpServer:
     def top_cum(self):
         with torch.no_grad():
 
-            # cum_addr = "http://10.5.17.149:8080"
-            cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
+            cum_addr = "http://10.5.40.64:8080"
+            # cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
             cum = cv2.VideoCapture(cum_addr)
             success, rawimg = cum.read()
             count = 0
@@ -347,11 +348,12 @@ class TcpServer:
                 # cv2.imshow('pivo',frame)
                 # cv2.waitKey(0)
                 # time.sleep(0.033)
+
                 command = ""
 
                 if self.last_target_name == Target.CIRCLE or self.last_target_name == Target.CUBE:
                     self.last_target_name = self.target_name
-                    self.target_name = Target.GREEN_CART
+                    self.target_name = Target.CART
                 if self.last_target_name == Target.GREEN_CART:
                     self.last_target_name = self.target_name
                     self.target_name = Target.BLUE_BUTTON
@@ -467,9 +469,9 @@ class TcpServer:
         self.target = self.current_graph[47]
         self.current_node = self.current_graph[50]
         value = input("write color:")
+        self.team_color = value
         value = f"color.{value}"
         self.client_socket.send(value.encode("utf-8"))
-
         # Thread(target=self.down_cam, args=[]).start()
         Thread(target=self.top_cum, args=[]).start()
         Thread(target=self.graph_run, args=[]).start()
