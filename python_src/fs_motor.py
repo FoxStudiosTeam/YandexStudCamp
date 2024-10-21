@@ -9,11 +9,12 @@ class FSMover(RobotDirection):
 
     cur_direction : Direction = None
 
-    sec_tr = 0.512
-    sec_tl = 0.665  
+    sec_tr = 0.337
+    sec_tl = 0.353
+    sec_tar = 0.33
 
-    sec_f = 0.5
-    speed = 50/sec_f
+    sec_f = 0.327
+    speed = 12.2/sec_f
     sec_d = speed/math.sqrt(2*(50**2))
 
     @fs_ev.bus.on('stop')
@@ -34,7 +35,7 @@ class FSMover(RobotDirection):
             super().stop()
             if diff == 180 or diff == -180:
                 super().right()
-                time.sleep(4*self.sec_tr)
+                time.sleep(4*self.sec_tar)
                 super().stop()
                 time.sleep(0.1)
                 self.cur_direction = next_direction
@@ -64,7 +65,7 @@ class FSMover(RobotDirection):
                 self.cur_direction = next_direction
             elif diff == 135:
                 super().right()
-                time.sleep(3*self.sec_tr)
+                time.sleep(3*self.sec_tar)
                 super().stop()
                 time.sleep(0.1)
                 self.cur_direction = next_direction
@@ -95,7 +96,7 @@ class FSMover(RobotDirection):
             time.sleep(0.1)
         elif direction.name == 'LEFT':
             super().left()
-            time.sleep(0.1)
+            time.sleep(0.1*(self.sec_tr/self.sec_tl))
             super().stop()
             time.sleep(0.1)
         elif direction.name == 'FORWARD':
