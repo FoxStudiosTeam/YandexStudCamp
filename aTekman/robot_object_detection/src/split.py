@@ -2,8 +2,8 @@ import os
 import shutil
 import random
 
-src_dir = "C:\\lkl\robots\\train"
-dest_dir = "C:\\lkl\robots\\val"
+src_dir = "C:\\lkl\\robots\\train"
+dest_dir = "C:\\lkl\\robots\\val"
 percentage = 10
 
 if not os.path.exists(dest_dir):
