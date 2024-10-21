@@ -4,13 +4,14 @@ import fs_event as fs_ev
 from fs_motor import FSMover
 from fs_move_simple import Direction
 from fs_movement import FsMovement
-
+from xr_infrared import *
 
 class FSocket:
-    def __init__(self, fs_motor: FSMover, fs_movement: FsMovement):
+    def __init__(self, fs_motor: FSMover, fs_movement: FsMovement, xr_infrared: Infrared):
         self.addr = ('192.168.2.121', 2002)
         self.fs_motor = fs_motor
         self.fs_movement = fs_movement
+        self.xr_infrared = xr_infrared
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self):
@@ -46,3 +47,6 @@ class FSocket:
             fs_ev.bus.emit("move", self.fs_motor, Direction.__getitem__(commands[1]))
         if commands[0] == "color":
             fs_ev.bus.emit("color", commands[1])
+        if commands[0] == "check_wall":
+            command = f"{self.xr_infrared.iravoid()}"
+            self.client_socket.send(command.encode('utf-8'))

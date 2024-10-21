@@ -281,7 +281,7 @@ threads.append(t5)
 
 fs_movement = FsMovement()
 #Поток для работы с нейронной сетью
-fs_neuro_thread = FSocket(fs_motor,fs_movement)
+fs_neuro_thread = FSocket(fs_motor,fs_movement,infrared)
 
 t_neural = threading.Thread(target=fs_neuro_thread.run, args=())
 threads.append(t_neural)

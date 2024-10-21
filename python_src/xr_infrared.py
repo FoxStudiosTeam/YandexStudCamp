@@ -22,35 +22,15 @@ go = RobotDirection()
 
 
 class Infrared(object):
-	def __init__(self):
-		pass
-
-	def trackline(self):
-		"""
-		Инфракрасное следование по линии
-		"""
-		cfg.LEFT_SPEED = 30
-		cfg.RIGHT_SPEED = 30
-		# print('ir_trackline run...')
-		# Оба датчика не обнаружили черную линию
-		if gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 0:  # Черная линия высокая, поверхность низкая
-			go.forward()
-		# Правый инфракрасный датчик обнаружил черную линию
-		elif gpio.digital_read(gpio.IR_L) == 0 and gpio.digital_read(gpio.IR_R) == 1:
-			go.left()
-		# Левый инфракрасный датчик обнаружил черную линию
-		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 0:
-			go.right()
-		# Оба инфракрасных датчика одновременно обнаруживают черную линию
-		elif gpio.digital_read(gpio.IR_L) == 1 and gpio.digital_read(gpio.IR_R) == 1:
-			go.stop()
-
 	def iravoid(self):
 		"""
 		Инфракрасное предотвращение столкновений
 		"""
 		if gpio.digital_read(gpio.IR_M) == 0:  # Если средний датчик обнаружил объект
-			go.stop()
+			return True
+		else:
+			return False
+			#go.stop()
 		# print("Инфракрасное предотвращение столкновений")
 
 	def irfollow(self):
