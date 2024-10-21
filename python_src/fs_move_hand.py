@@ -1,5 +1,6 @@
 from xr_i2c import I2c
 from xr_servo import Servo
+import fs_event as fs_ev
 import time
 
 i2c = I2c()
@@ -28,6 +29,14 @@ class Hand(Servo):
     #     print(i2c.readdata(i2c.mcu_address, 0x01))
     #     time.sleep(1)
     
+    # def test_catch(self):
+    #     self.set(2, 180)
+    #     time.sleep(0.2)
+    #     self.set(1, 75)
+    #     self.set(3, 90)
+    #     self.set(4, 45)
+
+    @fs_ev.bus.on('normal_state')
     def normal_state(self):
         self.set(1,180)
         time.sleep(0.5)
@@ -37,13 +46,7 @@ class Hand(Servo):
         self.set(7, 85)
         self.set(8, 105)
 
-    def test_catch(self):
-        self.set(2, 180)
-        time.sleep(0.2)
-        self.set(1, 75)
-        self.set(3, 90)
-        self.set(4, 45)
-
+    @fs_ev.bus.on('catch_cube')
     def catch_cube(self):
         # 28см от машинки до кубика
         self.set(2, 180)
@@ -56,6 +59,7 @@ class Hand(Servo):
         self.set(1, 180)
         self.set(2, 90)
 
+    @fs_ev.bus.on('catch_circle')
     def catch_sphere(self):
         # 28см от машинки до кубика
         self.set(2, 180)
@@ -68,6 +72,7 @@ class Hand(Servo):
         self.set(1, 180)
         self.set(2, 90)
 
+    @fs_ev.bus.on('drop')
     def drop(self):
         # корзинка должна быть в 10см
         self.set(2, 140)
@@ -77,6 +82,7 @@ class Hand(Servo):
         self.set(4, 45)
         time.sleep(1)        
 
+    @fs_ev.bus.on('push')
     def push_button(self):
         self.set(2, 180)
         time.sleep(0.7)

@@ -160,7 +160,7 @@ class AStarPath:
 
 class Target(Enum):
     CIRCLE = 0
-    CUBE = 1
+    KUBE = 1
     CART = 2
     BUTTON = 3
     BASE = 4
@@ -175,6 +175,7 @@ class TcpServer:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(("0.0.0.0", 2002))
         self.socket.listen(1)
+        self.aim_path = []
 
         self.labels = [
             "circle",
@@ -223,18 +224,33 @@ class TcpServer:
         boxes = data.boxes.xyxy.cpu().numpy().astype(np.int32)
         return classes_names, classes, boxes
 
-    def is_target_inside(self, x_centered: int, y_centered: int) -> bool:
-        # x01- левая граница захвата = 73
-        # y01 - верхняя граница захвата = 193
-        # х02 - правая граница = 276
-        # у02 - нижняя граница = 237
+    def is_target_inside(self, x_centered: int, y_centered: int, range : list) -> bool:
         # внутри = x01 < x_centered < x02; y01 < y_centered < y02;
 
+        x01, y01, x02, y02 = range
 
-        if (73 < x_centered < 276) and (193 < y_centered < 237 ):
+        if (x01 < x_centered < x02) and (y01 < y_centered < y02):
             return True
         else:
-            return False
+            if x02 < x_centered:
+                return Direction.RIGHT
+            elif x01 > x_centered:
+                return Direction.LEFT
+            elif y01 > y_centered:
+                return Direction.FORWARD
+            elif y02 < y_centered:
+                return Direction.BACK
+    
+    def inverted_path(self, path: List):
+        inverted_path = []
+        for elem in path:
+            if elem == Direction.FORWARD: inverted_path.append(Direction.BACK)
+            if elem == Direction.BACK: inverted_path.append(Direction.FORWARD)
+            if elem == Direction.RIGHT: inverted_path.append(Direction.LEFT)
+            if elem == Direction.LEFT: inverted_path.append(Direction.RIGHT) 
+        self.aim_path = []
+        return inverted_path 
+                   
 
     def down_cam(self) -> None:
         # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
@@ -256,18 +272,30 @@ class TcpServer:
 
             for box in result.boxes:
                 x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                x_centered = x1 - x0
-                y_centered = y1 - y0
-                flag = self.is_target_inside(x_centered, y_centered)
+                x_centered = x0 + (x1 - x0)/2
+                y_centered = y0 + (y1 - y0)/2
+
+                grip_range = [73, 193, 276, 237]
+                push_range = []
+                drop_range = [120, 205, 300, 271]
+
+                is_inside = None
 
                 if self.is_path_suspended == True and self.target_catched == False:
+                    
                     if local_name == None:
-                        command = f"move.{Direction.LEFT.name}"
+                        command = f"move.{Direction.RIGHT.name}"
                         self.client_socket.send(command.encode('utf-8'))
                         continue
                     elif (local_name == "cube" or local_name == "circle") and (self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
-                        command = f"move.{Direction.RIGHT.name}"
-
+                        is_inside = self.is_target_inside(x_centered, y_centered, grip_range)
+                        if is_inside == True:
+                            command = f"catch_{local_name}"
+                            self.target_catched = True
+                            self.aim_path = self.inverted_path()
+                        else:
+                            command = f"aim {is_inside}"
+                            self.aim_path.append(is_inside)
 
                         self.client_socket.send(command.encode('utf-8'))
                     elif local_name == "button" and self.target_name == Target.BUTTON and self.is_path_suspended == True:
