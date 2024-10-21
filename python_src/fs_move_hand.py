@@ -40,7 +40,7 @@ class Hand(Servo):
     def normal_state(self):
         self.set(1,180)
         time.sleep(0.5)
-        self.set(2, 30)
+        self.set(2, 90)
         self.set(3, 90)
         self.set(4, 90)
         self.set(7, 85)
