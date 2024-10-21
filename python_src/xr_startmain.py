@@ -48,9 +48,6 @@ except:
 from xr_music import Beep
 
 beep = Beep()
-from xr_power import Power
-
-power = Power()
 from xr_servo import Servo
 
 servo = Servo()
@@ -60,10 +57,6 @@ ps2 = PS2()
 from xr_i2c import I2c
 
 i2c = I2c()
-from xr_voice import Voice
-
-voice = Voice()
-
 
 
 
@@ -271,8 +264,6 @@ threads.append(t1)
 
 
 # Поток для голосового модуля
-t4 = threading.Thread(target=voice.run, args=())
-threads.append(t4)
 
 # Поток для работы с пользовательским освещением
 t5 = threading.Thread(target=fs_custom_light.run, args=())

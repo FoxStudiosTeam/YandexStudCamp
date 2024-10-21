@@ -24,6 +24,8 @@ class CustomLight(Car_light):
 
         while True:
             self.set_ledgroup(1,8,COLOR[self.color])
+            self.set_ledgroup(2,8,COLOR[self.color])
+
             # self.set_led(num=j, color='black')
             # self.set_led(num=i, color='orange')
 
