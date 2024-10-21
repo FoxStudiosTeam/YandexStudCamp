@@ -7,6 +7,7 @@ from xr_config import COLOR
 class CustomLight(Car_light):
     def __init__(self):
         super().__init__()
+        self.color = 'red'
 
     def set_led(self, num, color):
         group = 2  # Color car, not raspberry
@@ -14,12 +15,15 @@ class CustomLight(Car_light):
         i2c.writedata(i2c.mcu_address, sendbuf)
         time.sleep(0.005)
 
+    def set_color(self,color):
+        self.color = color
+
     def run(self):
         i = 0  # lamp num cant be more that 7 and less that 0
         j = 7
 
         while True:
-            self.set_ledgroup(1,8,COLOR['red'])
+            self.set_ledgroup(1,8,COLOR[self.color])
             # self.set_led(num=j, color='black')
             # self.set_led(num=i, color='orange')
 
