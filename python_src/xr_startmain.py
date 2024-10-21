@@ -222,6 +222,10 @@ def status():
     Timer(0.01, status).start()  # Каждый вход требует повторного запуска таймера
 
 
+@fs_ev.bus.on('color')
+def change_color_event(color):
+    fs_custom_light.set_color(color)
+
 if __name__ == '__main__':
     '''
     Основной вход программы

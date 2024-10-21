@@ -368,6 +368,9 @@ class TcpServer:
         self.current_graph = self.node_util.create_graph()
         self.target = self.current_graph[50]
         self.current_node = self.current_graph[46]
+        value = input(str())
+        value = f"color.{value}"
+        self.client_socket.send(value.encode("utf-8"))
 
         # Thread(target=self.down_cam, args=[]).start()
         Thread(target=self.top_cum, args=[]).start()

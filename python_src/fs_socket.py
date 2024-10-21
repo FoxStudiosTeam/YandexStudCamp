@@ -44,4 +44,5 @@ class FSocket:
             fs_ev.bus.emit("stop", self.fs_motor)
         if commands[0] == "move":
             fs_ev.bus.emit("move", self.fs_motor, Direction.__getitem__(commands[1]))
-
+        if commands[0] == "color":
+            fs_ev.bus.emit("color", commands[1])
