@@ -5,20 +5,13 @@ from queue import PriorityQueue
 from threading import Thread
 from typing import List, Tuple
 from fs_top_camera_utils import TopCameraUtils
-import os
 import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, Dataset
-import torchvision.transforms as transforms
-import cv2
-import numpy as np
-from PIL import Image
-from train import RectangleNet
 import cv2
 import math
 import numpy as np
 from ultralytics import YOLO
+from fs_top_camera_resizer import resize_field
+from fs_fish_eye_fixer import fix_fish_eye
 
 
 class Direction(Enum):
@@ -233,7 +226,7 @@ class TcpServer:
         boxes = data.boxes.xyxy.cpu().numpy().astype(np.int32)
         return classes_names, classes, boxes
 
-    def is_target_inside(self, x_centered: int, y_centered: int, range : list):
+    def is_target_inside(self, x_centered: int, y_centered: int, range: list):
         # внутри = x01 < x_centered < x02; y01 < y_centered < y02;
 
         x01, y01, x02, y02 = range
@@ -260,7 +253,6 @@ class TcpServer:
         self.aim_path = []
         return inverted_path
 
-
     def down_cam(self) -> None:
         # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
         # cum = cv2.VideoCapture(f"http://192.168.2.81:8080/?action=stream")
@@ -281,8 +273,8 @@ class TcpServer:
 
             for box in result.boxes:
                 x0, y0, x1, y1 = box.xyxy.cpu().numpy().astype(np.int32)
-                x_centered = x0 + (x1 - x0)/2
-                y_centered = y0 + (y1 - y0)/2
+                x_centered = x0 + (x1 - x0) / 2
+                y_centered = y0 + (y1 - y0) / 2
 
                 grip_range = [73, 193, 276, 237]
                 push_range = []
@@ -296,7 +288,8 @@ class TcpServer:
                         command = f"move.{Direction.RIGHT.name}"
                         self.client_socket.send(command.encode('utf-8'))
                         continue
-                    elif (local_name == "cube" or local_name == "circle") and (self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
+                    elif (local_name == "cube" or local_name == "circle") and (
+                            self.target_name == Target.CUBE or self.target_name == Target.CIRCLE) and self.is_path_suspended == True:
                         is_inside = self.is_target_inside(x_centered, y_centered, grip_range)
                         if is_inside == True:
                             command = f"catch_{local_name}"
@@ -320,65 +313,16 @@ class TcpServer:
 
     def top_cum(self):
         with torch.no_grad():
-            model = RectangleNet()
+
+            # cum_addr = "http://10.5.17.149:8080"
             cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
-            model.load_state_dict(torch.load(cum_addr, weights_only=True))
-            model.eval()
-
-            transform = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Resize((128, 128))
-            ])
-
-            # cum = cv2.VideoCapture("http://10.5.17.149:8080")
-            cum = cv2.VideoCapture(0)
-            success, frame = cum.read()
+            cum = cv2.VideoCapture(cum_addr)
+            success, rawimg = cum.read()
 
             while success:
-                ret, img = cum.read()
-
-                image = cv2.resize(img, (256, 256))
-                height, width, _ = image.shape
-                center_x, center_y = width // 2, height // 2
-                top_left = image[0:center_y, 0:center_x]
-                top_right = image[0:center_y, center_x:width]
-                top_right = cv2.flip(top_right, 1)
-                bottom_right = image[center_y:height, center_x:width]
-                bottom_right = cv2.flip(bottom_right, -1)
-                bottom_left = image[center_y:height, 0:center_x]
-                bottom_left = cv2.flip(bottom_left, 0)
-                images = [transform(top_left), transform(top_right), transform(bottom_right), transform(bottom_left)]
-                images_batch = torch.stack(images)
-                output = model(images_batch)
-                output = output.detach().numpy()
-                tl = output[0]
-                tl = tl * 0.5
-                tr = output[1]
-                tr = tr * 0.5
-                tr[0] = 1 - tr[0]
-                br = output[2]
-                br = br * 0.5
-                br = 1 - br
-                bl = output[3]
-                bl = bl * 0.5
-                bl[1] = 1 - bl[1]
-
-                img_size = img.shape[:2][::-1]
-
-                src_points = np.array([tl * img_size, tr * img_size, br * img_size, bl * img_size], dtype='float32')
-                dst_points = np.array([[0, 0], [800, 0], [800, 600], [0, 600]], dtype='float32')
-                matrix = cv2.getPerspectiveTransform(src_points, dst_points)
-                frame = cv2.warpPerspective(img, matrix, (800, 600))
-
-                cv2.circle(img, (int(tl[0] * img_size[0]), int(tl[1] * img_size[1])), 5, (0, 0, 255), -1)
-                cv2.circle(img, (int(tr[0] * img_size[0]), int(tr[1] * img_size[1])), 5, (0, 0, 255), -1)
-                cv2.circle(img, (int(br[0] * img_size[0]), int(br[1] * img_size[1])), 5, (0, 0, 255), -1)
-                cv2.circle(img, (int(bl[0] * img_size[0]), int(bl[1] * img_size[1])), 5, (0, 0, 255), -1)
-
-
-
-                if not ret:
-                    break
+                success, rawimg = cum.read()
+                img = fix_fish_eye(rawimg, cum)
+                frame = resize_field(img)
 
                 result = self.predict(frame)
                 classes_names, classes, boxes = self.parse_result(result)
@@ -433,7 +377,6 @@ class TcpServer:
         self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
         self.graph_run()
 
-
     def graph_run(self) -> None:
         self.current_path = self.a_star.a_star_simple(self.current_node, self.target, self.current_graph)
 
@@ -482,7 +425,6 @@ class TcpServer:
                 print("suspended")
                 time.sleep(0.25)
 
-
     def set_wall(self):
         if (14 <= self.current_node.x <= 17) and (self.current_node.y == 7 or 16):
             for elem in self.current_graph:
@@ -492,7 +434,6 @@ class TcpServer:
             for elem in self.current_graph:
                 if elem.x in [12, 13, 18, 19] and 10 <= elem.y <= 13:
                     elem.is_block = True
-
 
     def run(self) -> None:
         self.client_socket, address = self.socket.accept()
