@@ -290,7 +290,7 @@ class TcpServer:
 
     def down_cam(self) -> None:
         # cum = cv2.VideoCapture(f"{address[0]}:{address[1]}?action=stream")
-        cum = cv2.VideoCapture(f"http://192.168.1.2:8080/?action=stream")
+        cum = cv2.VideoCapture(f"http://192.168.2.81:8080/?action=stream")
         # cum = cv2.VideoCapture(0)
         # cum = cv2.VideoCapture("http://192.168.1.69:8080")
         success, frame = cum.read()
@@ -380,7 +380,7 @@ class TcpServer:
             #     print(e)
             #     continue
 
-            cv2.imshow('pivo',frame)
+            cv2.imshow('pivo2',frame)
             cv2.waitKey(1)
             time.sleep(1)
         # raw_data = self.client_socket.recv(1024)
@@ -394,8 +394,8 @@ class TcpServer:
     def top_cum(self):
         with torch.no_grad():
 
-            cum_addr = "http://192.168.1.69:8080"
-            # cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
+            # cum_addr = "http://192.168.1.69:8080"
+            cum_addr = "rtsp://Admin:rtf123@192.168.2.250/251:554/1/1"
             top_cum = cv2.VideoCapture(cum_addr)
             success, rawimg = top_cum.read()
             count = 0
