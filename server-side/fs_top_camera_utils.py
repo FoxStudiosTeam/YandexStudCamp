@@ -7,7 +7,7 @@ class TopCameraUtils:
         self.y_pic = y_pic
 
     # TODO: current_pos_from_neuro -> rn to normal name
-    def calculate_current_pos(self, current_pos_from_neuro: Tuple[int, int]) -> Tuple[int, int]:
+    def calculate_current_pos(self, current_pos_from_neuro: Tuple) -> Tuple[int, int]:
         neuro_x_pos = current_pos_from_neuro[0]
         graph_num_x = 8 * 4
         neuro_y_pos = current_pos_from_neuro[1]
