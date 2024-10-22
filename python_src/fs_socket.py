@@ -50,14 +50,15 @@ class FSocket:
             fs_ev.bus.emit("move", self.fs_motor, Direction.__getitem__(commands[1]))
         if commands[0] == "color":
             fs_ev.bus.emit("color", commands[1])
-        if commands[0] == "aim.FORWARD":
-            fs_ev.bus.emit("aim", self.fs_motor, Direction.FORWARD)
-        if commands[0] == "aim.RIGHT":
-            fs_ev.bus.emit("aim", self.fs_motor, Direction.RIGHT)
-        if commands[0] == "aim.LEFT":
-            fs_ev.bus.emit("aim", self.fs_motor, Direction.LEFT)
-        if commands[0] == "aim.BACK":
-            fs_ev.bus.emit("aim", self.fs_motor, Direction.BACK)
+        if len(commands) > 1:
+            if commands[0] == "aim" and commands[1] == "FORWARD":
+                fs_ev.bus.emit("aim", self.fs_motor, Direction.FORWARD)
+            if commands[0] == "aim" and commands[1] == "RIGHT":
+                fs_ev.bus.emit("aim", self.fs_motor, Direction.RIGHT)
+            if commands[0] == "aim" and commands[1] == "LEFT":
+                fs_ev.bus.emit("aim", self.fs_motor, Direction.LEFT)
+            if commands[0] == "aim" and commands[1] == "BACK":
+                fs_ev.bus.emit("aim", self.fs_motor, Direction.BACK)
         if commands[0] == "catch_cube":
             fs_ev.bus.emit("catch_cube", self.fs_hand)
         if commands[0] == "catch_circle":
